@@ -11,12 +11,8 @@ public class Main{
 		if(format == null) return;
 
 		DocumentParser dParser = new DocumentParser();
-
-
-
-
-
-
+		NodeParser nParser = new NodeParser();
+		Transform transfrom = new Transform();
 
 		return;
 	}

@@ -1,6 +1,6 @@
-public class documentParser{
+public class DocumentParser{
 
-	public void documentParser(){
+	public void DocumentParser(){
 
 
 		

@@ -8,7 +8,10 @@ public class Main{
 
 		format = check.receive(args);
 
-		if(format == null)System.out.println("Error");
+		if(format == null) return;
+
+		DocumentParser dParser = new DocumentParser();
+
 
 
 

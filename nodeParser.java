@@ -1,6 +1,6 @@
-public class nodeParser{
+public class NodeParser{
 
-	public void nodeParser(){
+	public void NodeParser(){
 
 
 		

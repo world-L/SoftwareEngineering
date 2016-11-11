@@ -18,7 +18,7 @@ public class CommandCheck{
 				if(args[0].equals("-help")){
 
 					this.help();
-					return null;
+					System.exit(1);
 
 				}
 
@@ -119,7 +119,7 @@ public class CommandCheck{
 			}
 		}catch(Exception e){
 				System.err.println(e);
-				return null;
+				System.exit(1);
 		}		
 			
 	
@@ -130,15 +130,15 @@ public class CommandCheck{
 
 	public void help(){
 		System.out.println("Instruction: java Main -help  ");
-		System.out.println("  Or java Main [ MDfile [-option1 arg] [-option2 arg] ]+\n");
+		System.out.println("  Or java Main [ MDfile [-option arg] [-option arg] ]+\n");
 		
 		System.out.println("in here, options are like this.");
-		System.out.println("  -filename: [arg]	designate filename of converting html file");
+		System.out.println("  [-filename arg]	designate filename of converting html file");
 		System.out.println("                	[arg] is filename of converting html file");
 		System.out.println("                	default filename is [MDfile]'s filename");
 		System.out.println("			Cannot use those characters:\\ / : * ? \" < > |\n");
 		
-		System.out.println("  -style: [arg] 	designate style of converting html file");
+		System.out.println("  [-style  arg] 	designate style of converting html file");
 		System.out.println("                	[arg] is style of converting html file");
 		System.out.println("                	There are three styles of support : plain, fancy, slide");
 		System.out.println("                	default style is plain style\n");

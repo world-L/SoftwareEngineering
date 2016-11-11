@@ -11,7 +11,7 @@ public class Main{
 
 		for(int i = 0;i<format.getnumOfFile();i++){
 			DocumentParser dParser = new DocumentParser();
-			dParser.readLine(format,i);
+			dParser.readFile(format,i);
 			NodeParser nParser = new NodeParser();
 			Transform transfrom = new Transform();
 			transfrom.createFile(format,i);

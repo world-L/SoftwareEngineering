@@ -9,7 +9,7 @@ This file is command line interface that receives arguments from users.
 If you want any help in using command line, you can use __-help__ option.
 
 #####This is example of command arguments:
->java Main inputFile.md -filename outputFile -style styleName
+>java Main [ inputFile.md [-filename outputFile] [-style styleName]  ]+
 
 1. inputFile.md
 

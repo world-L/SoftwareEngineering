@@ -10,7 +10,7 @@ public class DocumentParser{
 	}
 		
 
-	public void readLine(Format format, int index){
+	public void readFile(Format format, int index){
 		try {
       
       	BufferedReader in = new BufferedReader(new FileReader(format.getInputIndex(index)));

@@ -5,96 +5,132 @@ public class CommandCheck{
 	public Format receive(String[] args){
 
 		int argNum;
+		int checkNum;
 
 		format = new Format();
 		
 		try{
 			argNum = this.inputCheck(args);
 			
-			if(args[0].equals("-help")){
 
-				this.help();
-				return null;
-
-			}   
-
-			format.setInput(this.fileCheck(args[0]));
-
-
-			if(argNum == 1){
-
-				format.setStyle(1);
-				format.setOutput(format.getInput());
-
-			}else if(argNum == 3){
+			for(int i=0;i<argNum;){
 				
-				if(args[1].equals("-filename")){
+				if(args[0].equals("-help")){
 
-					format.setOutput(this.outNameCheck(args[2]));
+					this.help();
+					return null;
+
+				}
+
+				checkNum = 1;	   
+
+				format.setInput(this.fileCheck(args[i]));
+		
+				if(argNum - i <= 1){
+
 					format.setStyle(1);
+					format.setOutput(format.getInput().substring(0,format.getInput().length()-3)+".html");
+					i += checkNum;
 
-				}else if(args[1].equals("-style")){
+				}else if(argNum - i <= 3){
 
-					format.setStyle(this.styleCheck(args[2]));
-					format.setOutput(format.getInput());
+					if(args[i+1].equals("-style")){
+				
+						if(i+2 < argNum)
+							format.setStyle(this.styleCheck(args[i+2]));
+						else
+							throw new Exception("Wrong format");
 
+						checkNum +=2;		
+
+					}else
+						format.setStyle(1);
+					
+
+					if(args[i+1].equals("-filename")){
+
+						if(i+2 < argNum)
+							format.setOutput(this.outNameCheck(args[i+2])+".html");
+						else
+							throw new Exception("Wrong format");
+
+						checkNum +=2;			
+
+					}else
+						format.setOutput(format.getInput().substring(0,format.getInput().length()-3)+".html");
+					
+					i += checkNum;
 				}else{
 
-					throw new Exception("Wrong format: option command is -filename or -style");
-				}	
-		
-			}else if(argNum == 5){
-
-				if(args[1].equals("-filename")){
-
-					format.setOutput(this.outNameCheck(args[2]));
-
-					if(!args[3].equals("-style"))
-						throw new Exception("Wrong format");
+					if(args[i+1].equals("-style")){
 						
-					format.setStyle(this.styleCheck(args[4]));
+						format.setStyle(this.styleCheck(args[i+2]));
+						checkNum +=2;		
 
-				}else if(args[1].equals("-style")){
+						if(argNum - i <= 5){
+							if(args[i+3].equals("-filename")){
+								format.setOutput(this.outNameCheck(args[i+4])+".html");
+								checkNum +=2;
+							}else
+								format.setOutput(format.getInput().substring(0,format.getInput().length()-3)+".html");
+						}else
+							format.setOutput(format.getInput().substring(0,format.getInput().length()-3)+".html");
 
-					format.setStyle(this.styleCheck(args[2]));
+						i += checkNum;
 
-					if(!args[3].equals("-filename"))
-						throw new Exception("Wrong format: option command is -filename or -style");
+					}else if(args[i+1].equals("-filename")){
+						
+						format.setOutput(this.outNameCheck(args[i+2])+".html");
+						checkNum +=2;		
 
-					format.setOutput(this.outNameCheck(args[4]));
+						if(argNum - i <= 5){
+							if(args[i+3].equals("-style")){
+								format.setStyle(this.styleCheck(args[i+4]));
+								checkNum +=2;
+							}else
+								format.setStyle(1);
+						}else
+							format.setStyle(1);
 
-				}else{
+						i += checkNum;
 
-					throw new Exception("Wrong format: option command is -filename or -style");
-				}	
-
-			}						
+					}else{
+						format.setStyle(1);
+						format.setOutput(format.getInput().substring(0,format.getInput().length()-3)+".html");	
+						i += checkNum;
+					}
+					
+				}						
 			
-		}
-		catch(Exception e){
-			System.err.println(e);
-			return null;
+			
+			// System.out.println("Input File name is:" + format.getInput());
+			// System.out.println("Output File name is:" + format.getOutput());
+
+			// if(format.getStyle() == 1)
+			// 	System.out.println("Style is: plain");
+			// else if(format.getStyle() == 2)
+			// 	System.out.println("Style is: fancy");
+			// else
+			// 	System.out.println("Style is: slide");
+
+			format.addNumOfFile();
+
+
+			}
+		}catch(Exception e){
+				System.err.println(e);
+				return null;
 		}		
-
-		System.out.println("Input File name is:" + format.getInput());
-		
-		System.out.println("Output File name is:" + format.getOutput());
-
-		if(format.getStyle() == 1)
-			System.out.println("Style is: plain");
-		else if(format.getStyle() == 2)
-			System.out.println("Style is: fancy");
-		else
-			System.out.println("Style is: slide");
-
+			
+	
 		return format;
 		
 	}
 
 
 	public void help(){
-		System.out.println("Instruction: java Main [MDfile] [-option] [arg]");
-		System.out.println("  Or java Main MDfile [-option1] [arg] [-option2] [arg]\n");
+		System.out.println("Instruction: java Main -help  ");
+		System.out.println("  Or java Main [ MDfile [-option1 arg] [-option2 arg] ]+\n");
 		
 		System.out.println("in here, options are like this.");
 		System.out.println("  -filename: [arg]	designate filename of converting html file");
@@ -107,6 +143,7 @@ public class CommandCheck{
 		System.out.println("                	There are three styles of support : plain, fancy, slide");
 		System.out.println("                	default style is plain style\n");
 
+		System.out.println("About help Commnad");
 		System.out.println("  -help			print this help message");
 		System.out.println("  			this option cannot use with [MDfile] command and another option\n");
 
@@ -130,10 +167,6 @@ public class CommandCheck{
 
 		if(input.length == 0){
 			throw new Exception("No arguments");
-		}else if(input.length == 2 | input.length == 4){
-			throw new Exception("Wrong format: missing arguments");
-		}else if(input.length > 5){
-			throw new Exception("Too many arguments");
 		}else{
 			return input.length;
 		}

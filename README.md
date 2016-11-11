@@ -34,6 +34,8 @@ If you want any help in using command line, you can use __-help__ option.
 -------------------------------------------
 
 #####There are several rules that you have to follow:
+
+* You have to compile Main.java file before execution
 	
 * Cannot use those characters in html output file name
 >\\ / : * ? \" < > |

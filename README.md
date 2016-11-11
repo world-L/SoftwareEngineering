@@ -42,6 +42,7 @@ If you want any help in using command line, you can use __-help__ option.
 
 * Cannot use -help commnad with another command
 
+* You can use multiple md files as input
 --------------------------------------------
 
 #####There are several example of command line inputs:
@@ -50,16 +51,21 @@ If you want any help in using command line, you can use __-help__ option.
 	  >> Print help function
 	     	
 	* java Main inputFile.md
-	  >> Read inputFile.md and Covert to inputFile.html as plain style 	
+	  >> Read inputFile.md and Convert to inputFile.html as plain style 	
 	
 	* java Main inputFile.md -filename outputFile
-	  >> Read inputFile.md and Covert to outputFile.html as plain style
+	  >> Read inputFile.md and Convert to outputFile.html as plain style
 
 	* java Main inputFile.md -style fancy
-	  >> Read inputFile.md and Covert to inputFile.html as fancy style
+	  >> Read inputFile.md and Convert to inputFile.html as fancy style
 
 	* java Main inputFile.md -filename outputFile -style slide
-	  >> Read inputFile.md and Covert to outputFile.html as slide style
+	  >> Read inputFile.md and Convert to outputFile.html as slide style
 	  
 	* java Main inputFile.md -style fancy -filename outputFile
-      >> Read inputFile.md and Covert to outputFile.html as fancy style
+      >> Read inputFile.md and Convert to outputFile.html as fancy style
+	
+	* java Main inputFile1.md -style fancy inputFile2.md inputFile3.md -filename outputFile3
+	  >> Read inputFile1.md and Convert to inputFile1.html as fancy style
+	  >> Read inputFile2.md and Convert to inputFile2.html as plain style
+	  >> Read inputFile3.md and Convert to outputFile3.html as plain style

@@ -2,7 +2,7 @@ import java.io.*;
 
 public class DocumentParser{
 
-	public void DocumentParser(){
+	public DocumentParser(){
 
 		
 

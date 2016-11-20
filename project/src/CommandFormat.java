@@ -1,13 +1,13 @@
 import java.util.ArrayList;
 
-public class Format{
+public class CommandFormat{
 
 	private ArrayList<String> input;
 	private ArrayList<String> output; 
 	private ArrayList<Integer> style;
 	private int numOfFile;
 
-	public Format(){
+	public CommandFormat(){
 		input = new ArrayList<String>();
 		output = new ArrayList<String>();
 		style = new ArrayList<Integer>();

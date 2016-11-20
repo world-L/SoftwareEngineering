@@ -1,13 +1,13 @@
 public class CommandCheck{
 
-	Format format;
+	CommandFormat format;
 
-	public Format receive(String[] args){
+	public CommandFormat receive(String[] args){
 
 		int argNum;
 		int checkNum;
 
-		format = new Format();
+		format = new CommandFormat();
 		
 		try{
 			argNum = this.inputCheck(args);
@@ -103,16 +103,6 @@ public class CommandCheck{
 				}						
 			
 			
-			// System.out.println("Input File name is:" + format.getInput());
-			// System.out.println("Output File name is:" + format.getOutput());
-
-			// if(format.getStyle() == 1)
-			// 	System.out.println("Style is: plain");
-			// else if(format.getStyle() == 2)
-			// 	System.out.println("Style is: fancy");
-			// else
-			// 	System.out.println("Style is: slide");
-
 			format.addNumOfFile();
 
 

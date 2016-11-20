@@ -1,15 +1,14 @@
 import java.io.*;
+import java.util.ArrayList;
 
 public class Transform{
 
-	public void Transform(){
-
+	public Transform(){
 
 		
 	}
 		
-	public void createFile(Format format, int index){
-		String txt = "Test file" ;
+	public void createFile(CommandFormat format, int index, ArrayList<String> html){
          
         String fileName = format.getOutputIndex(index);
          
@@ -33,12 +32,21 @@ public class Transform{
              }
    
             FileWriter fw = new FileWriter(file, false) ;
-             
-            fw.write(txt);
+            
+            fw.write("<html>\n<title></title>\n<body>");
             fw.flush();
- 
-            fw.close(); 
-             
+
+            for(String line : html){
+                
+                fw.write(line + "\n");
+                fw.flush();
+            }
+
+            fw.write("</body>\n</html>");
+            fw.flush();
+            
+
+            fw.close();              
              
         }catch(Exception e){
             e.printStackTrace();

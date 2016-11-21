@@ -1,3 +1,5 @@
+// Tokens class that contain text information
+
 public class Tokens implements MDElement{
 
 	protected String text;
@@ -7,7 +9,8 @@ public class Tokens implements MDElement{
 
 		
 	}
-		
+	
+	//this function dose nothing yet
 	public void accept(MDElementVisitor visitor){}
 
 	public String getItem(){

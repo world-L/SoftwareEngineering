@@ -1,5 +1,7 @@
 import java.io.*;
 
+//PlainVisitor class that actually read, parse file and generate html code as plain style
+
 public class PlainVisitor implements MDElementVisitor{
 
 	public PlainVisitor(){
@@ -7,7 +9,8 @@ public class PlainVisitor implements MDElementVisitor{
 
 		
 	}
-		
+	
+  //the function that parse raw data of the node to token and set html code
 	public void visitNode(Node node){
 
     //parsing data to token
@@ -16,9 +19,11 @@ public class PlainVisitor implements MDElementVisitor{
       break;
     }
 
+    // apply accept function to nested Node list
     for(Node nestedNode : node.getNodeList())
           nestedNode.accept(this);
 
+    //check instance of the node and generate html code    
     if(node instanceof Header){
       Header header = (Header)node;
 
@@ -35,13 +40,14 @@ public class PlainVisitor implements MDElementVisitor{
 
       block.setHtml();
     }else{
-System.out.println("n");
+
     }    
 
        
 
   }
 
+  //the function that read file and parse to the node from the data
 	public void visitDocument(Document document){
       try {
       
@@ -50,15 +56,15 @@ System.out.println("n");
           int nested = 0;
           int count = 0;
 
-          while ((s = in.readLine()) != null) {
+          while ((s = in.readLine()) != null) { //read file until detect the EOF
 
               nested = 0;
 
-              while(true){
+              while(true){  // iterate until string has no item
               
               Node newNode;
 
-              if(s.startsWith("#")){
+              if(s.startsWith("#")){  //check the string contain header item
                   int i;
                   for(i = 1;i<s.length();i++)
                     if(s.charAt(i) != '#')break;
@@ -70,7 +76,7 @@ System.out.println("n");
                   newNode.setData(s); 
                   document.insertNode(newNode);
                   break;       
-              }else{
+              }else{  //the string has nothing, set Block node
 
                   newNode = new Block();
                   newNode.setData(s);

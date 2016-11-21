@@ -1,3 +1,5 @@
+//Block class that represent <p> tag
+
 public class Block extends Node{
 
 	private String head;

@@ -1,3 +1,5 @@
+// MDElementVisitor interface
+
 interface MDElementVisitor{
 
 	void visitDocument(Document document);

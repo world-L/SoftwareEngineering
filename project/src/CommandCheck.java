@@ -1,9 +1,12 @@
+//CommandCheck class that read files and set formats
+
+
 public class CommandCheck{
 
 	CommandFormat format;
 
-	public CommandFormat receive(String[] args){
-
+	public CommandFormat receive(String[] args){	// argument can contain inputfile name, outputfile name, style,
+													// and help command.
 		int argNum;
 		int checkNum;
 
@@ -13,9 +16,9 @@ public class CommandCheck{
 			argNum = this.inputCheck(args);
 			
 
-			for(int i=0;i<argNum;){
+			for(int i=0;i<argNum;){	// check argument and set format each file
 				
-				if(args[0].equals("-help")){
+				if(args[0].equals("-help")){	// print help message and return
 
 					this.help();
 					System.exit(1);
@@ -25,8 +28,13 @@ public class CommandCheck{
 				checkNum = 1;	   
 
 				format.setInput(this.fileCheck(args[i]));
-		
-				if(argNum - i <= 1){
+				
+
+				/* check the number of argument and set format
+					default format of outputfile name is inputfile name
+					default format of style is plain style	
+				*/					
+				if(argNum - i <= 1){	// set default formats
 
 					format.setStyle(1);
 					format.setOutput(format.getInput().substring(0,format.getInput().length()-3)+".html");
@@ -103,7 +111,7 @@ public class CommandCheck{
 				}						
 			
 			
-			format.addNumOfFile();
+			format.addNumOfFile(); // increase number of input format
 
 
 			}
@@ -118,7 +126,7 @@ public class CommandCheck{
 	}
 
 
-	public void help(){
+	public void help(){	//print help messasge function
 		System.out.println("Instruction: java Main -help  ");
 		System.out.println("  Or java Main [ MDfile [-option arg] [-option arg] ]+\n");
 		
@@ -140,7 +148,7 @@ public class CommandCheck{
 		System.out.println("For more information, see README.md document.");
 	
 	}
-	public String fileCheck(String name) throws Exception{
+	public String fileCheck(String name) throws Exception{	// check that the input filename is .md format
 		
 		String[] filename;
 
@@ -153,7 +161,7 @@ public class CommandCheck{
 		return name;
 	}
 
-	public int inputCheck(String[] input) throws Exception{				
+	public int inputCheck(String[] input) throws Exception{	// check the number of input		
 
 		if(input.length == 0){
 			throw new Exception("No arguments");
@@ -163,8 +171,8 @@ public class CommandCheck{
 						
 	}
 
-	public int styleCheck(String style) throws Exception{
-
+	public int styleCheck(String style) throws Exception{	// check the style
+															// style contain plain, fancy and slide
 		if(style.equals("plain")){
 			return 1;
 		}else if(style.equals("fancy")){
@@ -177,7 +185,7 @@ public class CommandCheck{
 
 	}
 
-	public String outNameCheck(String output) throws Exception{
+	public String outNameCheck(String output) throws Exception{	// check the outputfile name contain illegal character
 
 		boolean check = false;
 		

@@ -1,3 +1,4 @@
+//Header class that represent <h#> tag
 
 public class Header extends Node{
 
@@ -5,6 +6,7 @@ public class Header extends Node{
 	private String head;
 	private String tail;
 
+	//header has level from 1 to 6
 	public Header(int level){
 		this.level = level;
 	}

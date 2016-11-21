@@ -1,0 +1,39 @@
+<project name = "Project" default = "prepare" basedir = ".">
+	<description>Simple Test</description>
+
+	<property file = "${basedir}/build.properties"/>
+
+
+	<property name="app.name" value="Project"/>
+  	<property name="app.path" value="/${app.name}"/>
+  	<property name="app.version" value="0.1-dev"/>
+
+	<property name="build.home" value="${basedir}/class"/>
+ 	<property name="dist.home" value="${basedir}/dist"/>
+  	<property name="docs.home" value="${basedir}/docs"/>
+  	<property name="src.home" value="${basedir}/src"/>
+
+
+  <target name="clean"
+   description="Delete old build and dist directories">
+    <delete dir="${build.home}"/>
+    <delete dir="${dist.home}"/>
+  </target>
+ 
+  <target name="prepare" depends="clean">
+
+  	<mkdir dir="${build.home}"/>
+    <mkdir dir="${dist.home}"/>
+
+  	
+  </target>
+
+
+  <target name="compile" depends="prepare">
+
+  	<javac srcdir="${src.home}"
+          destdir="${build.home}" debug = "true">
+    </javac>
+
+  </target>  
+</project>

@@ -11,13 +11,13 @@ public class Block extends Node{
 		String html = new String();
 
 		html = this.head;
-		for(Node inNode : this.otherNode){
+		for(Node inNode : this.otherNode)
         	html = html + inNode.getHtml();    
-      	}
-      	for(Tokens token : this.token){
+      	
+      	for(Tokens token : this.token)
         	html = html + token.getItem();    
-      	}
-			html = html + this.tail;
+      	
+		html = html + this.tail;
 	
 		super.html = html;
 

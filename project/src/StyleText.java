@@ -13,4 +13,3 @@ public class StyleText extends Tokens{
 	}
 
 }
-}

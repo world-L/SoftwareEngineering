@@ -1,3 +1,8 @@
+// StyleText class that contain style text
+// the text in this class should be handling escape character
+// this class contains style format like <em> <strong> ...
+
+
 public class StyleText extends Tokens{
 
 	private String text;

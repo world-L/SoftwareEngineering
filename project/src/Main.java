@@ -37,8 +37,8 @@ public class Main{
 				html.add(inNode.getHtml());
 			
 
-			Transform transfrom = new Transform();	//write file to html
-			transfrom.createFile(format,i,html);
+			Transform transform = new Transform();	//write file to html
+			transform.createFile(format,i,html);
 		}
 			
 		return;

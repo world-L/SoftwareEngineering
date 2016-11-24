@@ -1,5 +1,6 @@
 import java.io.*;
 
+//PlainVisitor class that actually read, parse file and generate html code as slide style
 
 public class SlideVisitor implements MDElementVisitor{
 

@@ -28,12 +28,25 @@
   	
   </target>
 
-
+  <path id="project.classpath">
+        <fileset dir="${basedir}/lib" includes="*.jar" />
+  </path>
   <target name="compile" depends="prepare">
 
   	<javac srcdir="${src.home}"
-          destdir="${build.home}" debug = "true">
+          destdir="${build.home}" debug = "true" 
+          includeantruntime="false">
+      <classpath refid = "project.classpath"/>      
     </javac>
 
-  </target>  
+  </target>
+
+  <jar destfile = "${basedir}/project.jar" basedir="${build.home}" excludes = "${basedir}/lib/**">
+    <zipgroupfileset dir="lib" includes="*.jar"/>
+    <manifest>
+        <attribute name="Main-Class" value="Main"/>
+    </manifest>
+  </jar>
+
+
 </project>

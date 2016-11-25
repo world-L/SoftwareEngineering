@@ -88,29 +88,23 @@ public class PlainVisitor implements MDElementVisitor{
                   newNode.setData(s); 
                   document.insertNode(newNode);
                   break;       
-              }
-              if(s.startsWith(">")){
-
-              	document.insertNode(new Block());
+              }/*
+              else if(s.startsWith(">")){
                 newNode = new Block();
 
                 newNode.setData(s);
                 document.insertNode(newNode);
               }
               else if(s.startsWith("---")){
-              	document.insertNode(new Horizon());
-
-                newNode = new Block();
+                newNode = new Horizon();
                 newNode.setData(s);
                 document.insertNode(newNode);
               }
               else if(s.startsWith("* ")){
-            	  document.insertNode(new ItemList());
-
                 newNode = new ItemList();
                 newNode.setData(s);
                 document.insertNode(newNode);
-              }
+              }*/
               else{  //the string has nothing, set Block node
 
                   newNode = new Block();

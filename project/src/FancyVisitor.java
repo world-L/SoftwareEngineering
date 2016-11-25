@@ -1,6 +1,5 @@
 import java.io.*;
 
-//PlainVisitor class that actually read, parse file and generate html code as fancy style
 
 public class FancyVisitor implements MDElementVisitor{
 
@@ -31,10 +30,14 @@ public class FancyVisitor implements MDElementVisitor{
                 for(i = 1;i<s.length();i++)
                   if(s.charAt(i) != '#')break;
 
-
-
                 document.insertNode(new Header(i));
                 continue;
+            }
+            if(s.startsWith(">")){
+            	document.insertNode(new Block());
+            }
+            if(s.contentEquals("---")){
+            	document.insertNode(new Horizon());
             }
 
 

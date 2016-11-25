@@ -1,14 +1,12 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 //PlainVisitor class that actually read, parse file and generate html code as plain style
 
 public class PlainVisitor implements MDElementVisitor{
 
-	public PlainVisitor(){
-
-
-		
-	}
+	public PlainVisitor(){}
 	
   //the function that parse raw data of the node to token and set html code
 	public void visitNode(Node node){
@@ -29,10 +27,19 @@ public class PlainVisitor implements MDElementVisitor{
 
       header.setHead("<h"+header.getLevel()+">");
       header.setTail("</h"+header.getLevel()+">");
-
       header.setHtml();
-
-    }else if(node instanceof Block){
+    }else if(node instanceof Horizon){
+    	Horizon horizon = (Horizon)node;
+    	
+    	horizon.setHead("<hr/>");	
+    	horizon.setHtml();
+	}else if(node instanceof ItemList){
+		ItemList itemlist = (ItemList)node;
+		
+		itemlist.setHead("<li>");
+		itemlist.setTail("</li>");
+		itemlist.setHtml();
+	}else if(node instanceof Block){
       Block block = (Block)node;
 
       block.setHead("<p>");
@@ -76,7 +83,17 @@ public class PlainVisitor implements MDElementVisitor{
                   newNode.setData(s); 
                   document.insertNode(newNode);
                   break;       
-              }else{  //the string has nothing, set Block node
+              }
+              if(s.startsWith(">")){
+              	document.insertNode(new Block());
+              }
+              else if(s.startsWith("---")){
+              	document.insertNode(new Horizon());
+              }
+              else if(s.startsWith("* ")){
+            	  document.insertNode(new ItemList());
+              }
+              else{  //the string has nothing, set Block node
 
                   newNode = new Block();
                   newNode.setData(s);
@@ -84,11 +101,7 @@ public class PlainVisitor implements MDElementVisitor{
 
                   break;
               }
-
-
             }            
-
-
           }
           in.close();
         }catch (IOException e) {

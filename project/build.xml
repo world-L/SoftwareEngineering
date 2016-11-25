@@ -1,14 +1,12 @@
 <project name = "Project" default = "compile" basedir = ".">
 	<description>Simple Test</description>
 
-	<property file = "${basedir}/build.properties"/>
-
 
 	<property name="app.name" value="Project"/>
   	<property name="app.path" value="/${app.name}"/>
   	<property name="app.version" value="0.1-dev"/>
 
-	<property name="build.home" value="${basedir}/class"/>
+	<property name="build.home" value="${basedir}/classes"/>
  	<property name="dist.home" value="${basedir}/dist"/>
   	<property name="docs.home" value="${basedir}/docs"/>
   	<property name="src.home" value="${basedir}/src"/>
@@ -41,7 +39,7 @@
 
   </target>
 
-  <jar destfile = "${basedir}/project.jar" basedir="${build.home}" excludes = "${basedir}/lib/**">
+  <jar destfile = "${basedir}/project.jar" basedir="${build.home}">
     <zipgroupfileset dir="lib" includes="*.jar"/>
     <manifest>
         <attribute name="Main-Class" value="Main"/>

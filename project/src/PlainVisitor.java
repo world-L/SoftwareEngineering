@@ -38,14 +38,7 @@ public class PlainVisitor implements MDElementVisitor{
 		
 		itemlist.setHead("<li>");
 		itemlist.setTail("</li>");
-		itemlist.setHtml();
-	}else if(node instanceof Block){
-      Block block = (Block)node;
-
-      block.setHead("<p>");
-      block.setTail("</p>");
-
-      block.setHtml();  
+		itemlist.setHtml(); 
   }else{
      Block block = (Block)node;
 
@@ -83,28 +76,36 @@ public class PlainVisitor implements MDElementVisitor{
 
                   newNode = new Header(i);
                   nested++;
-
-                  s = s.substring(i,s.length());    
+   
                   newNode.setData(s); 
+                  s = s.substring(i,s.length()); 
                   document.insertNode(newNode);
                   break;       
-              }/*
-              else if(s.startsWith(">")){
+              }
+              else if(s.startsWith("&gt;")){
                 newNode = new Block();
 
                 newNode.setData(s);
                 document.insertNode(newNode);
+                break;
               }
               else if(s.startsWith("---")){
+               
                 newNode = new Horizon();
+               
                 newNode.setData(s);
                 document.insertNode(newNode);
+                break;
               }
               else if(s.startsWith("* ")){
+
                 newNode = new ItemList();
+
                 newNode.setData(s);
+                s = s.substring(2, s.length()); 
                 document.insertNode(newNode);
-              }*/
+                break;
+              }
               else{  //the string has nothing, set Block node
 
                   newNode = new Block();

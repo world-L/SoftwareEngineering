@@ -45,10 +45,15 @@ public class PlainVisitor implements MDElementVisitor{
       block.setHead("<p>");
       block.setTail("</p>");
 
-      block.setHtml();
-    }else{
+      block.setHtml();  
+  }else{
+     Block block = (Block)node;
 
-    }    
+      block.setHead("<p>");
+      block.setTail("</p>");
+
+      block.setHtml(); 
+  }
 
        
 
@@ -86,12 +91,21 @@ public class PlainVisitor implements MDElementVisitor{
               }
               if(s.startsWith(">")){
               	document.insertNode(new Block());
+
+                newNode.setData(s);
+                document.insertNode(newNode);
               }
               else if(s.startsWith("---")){
               	document.insertNode(new Horizon());
+
+                newNode.setData(s);
+                document.insertNode(newNode);
               }
               else if(s.startsWith("* ")){
             	  document.insertNode(new ItemList());
+                
+                newNode.setData(s);
+                document.insertNode(newNode);
               }
               else{  //the string has nothing, set Block node
 

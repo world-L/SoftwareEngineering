@@ -6,10 +6,10 @@ import java.io.IOException;
 
 public class PlainVisitor implements MDElementVisitor{
 
-	public PlainVisitor(){}
-	
+  public PlainVisitor(){}
+  
   //the function that parse raw data of the node to token and set html code
-	public void visitNode(Node node){
+  public void visitNode(Node node){
 
     //parsing data to token
     while(true){
@@ -29,16 +29,16 @@ public class PlainVisitor implements MDElementVisitor{
       header.setTail("</h"+header.getLevel()+">");
       header.setHtml();
     }else if(node instanceof Horizon){
-    	Horizon horizon = (Horizon)node;
-    	
-    	horizon.setHead("<hr/>");	
-    	horizon.setHtml();
-	}else if(node instanceof ItemList){
-		ItemList itemlist = (ItemList)node;
-		
-		itemlist.setHead("<li>");
-		itemlist.setTail("</li>");
-		itemlist.setHtml(); 
+      Horizon horizon = (Horizon)node;
+      
+      horizon.setHead("<hr/>"); 
+      horizon.setHtml();
+  }else if(node instanceof ItemList){
+    ItemList itemlist = (ItemList)node;
+    
+    itemlist.setHead("<li>");
+    itemlist.setTail("</li>");
+    itemlist.setHtml(); 
   }else{
      Block block = (Block)node;
 
@@ -53,7 +53,7 @@ public class PlainVisitor implements MDElementVisitor{
   }
 
   //the function that read file and parse to the node from the data
-	public void visitDocument(Document document){
+  public void visitDocument(Document document){
       try {
       
           BufferedReader in = new BufferedReader(new FileReader(document.filename));
@@ -77,14 +77,15 @@ public class PlainVisitor implements MDElementVisitor{
                   newNode = new Header(i);
                   nested++;
    
-                  newNode.setData(s); 
-                  s = s.substring(i,s.length()); 
+                  s = s.substring(i,s.length());
+                  newNode.setData(s);  
                   document.insertNode(newNode);
                   break;       
               }
-              else if(s.startsWith("&gt;")){
+              else if(s.startsWith(">")){
                 newNode = new Block();
 
+                s = s.substring(1, s.length());
                 newNode.setData(s);
                 document.insertNode(newNode);
                 break;
@@ -97,12 +98,12 @@ public class PlainVisitor implements MDElementVisitor{
                 document.insertNode(newNode);
                 break;
               }
-              else if(s.startsWith("* ")){
-
+              else if((s.startsWith("* ")) || (s.startsWith("\t-")) || (s.startsWith("\t*"))){
                 newNode = new ItemList();
 
-                newNode.setData(s);
                 s = s.substring(2, s.length()); 
+
+                newNode.setData(s);
                 document.insertNode(newNode);
                 break;
               }
@@ -124,5 +125,5 @@ public class PlainVisitor implements MDElementVisitor{
       } 
 
 
-	}
+  }
 }

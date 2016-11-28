@@ -8,6 +8,25 @@ public class PlainVisitor implements MDElementVisitor{
 
   public PlainVisitor(){}
   
+  public boolean cuttingFfont(String string, String special){
+	  boolean real = false;
+	  
+	  for(int i = 0; i<string.length(); i++){
+		  string = string.substring(i);
+		  
+		  /* start with space or tab except*/
+		  if(string.startsWith(" ") || string.startsWith("\t"));
+			  
+		  /* start with special character */ 
+		  else if(string.startsWith(special)){
+			  real = true;
+			  break;
+		  }
+		  else
+			  break;
+	  }
+	  return real;
+  }
   //the function that parse raw data of the node to token and set html code
   public void visitNode(Node node){
 
@@ -72,9 +91,7 @@ public class PlainVisitor implements MDElementVisitor{
               
               while(true){  // iterate until string has no item
               Node newNode;
-              if(s.equals(""))
-            	  break;
-              else if(s.startsWith("#")){  //check the string contain header item
+              if(cuttingFfont(s, "#")){  //check the string contain header item
                   int i;
                   for(i = 1;i<s.length();i++)
                     if(s.charAt(i) != '#')break;
@@ -87,7 +104,7 @@ public class PlainVisitor implements MDElementVisitor{
                   document.insertNode(newNode);
                   break;       
               }
-              else if(s.startsWith(">")){
+              else if(cuttingFfont(s, ">")){
                 newNode = new Block();
 
                 s = s.substring(1, s.length());
@@ -95,15 +112,22 @@ public class PlainVisitor implements MDElementVisitor{
                 document.insertNode(newNode);
                 break;
               }
-              else if(s.startsWith("---")){
-               
+              else if(cuttingFfont(s, "---") || cuttingFfont(s, "***") || cuttingFfont(s, "* * *") ||cuttingFfont(s, "- - -")){
                 newNode = new Horizon();
                
                 newNode.setData(s);
                 document.insertNode(newNode);
                 break;
               }
-              else if((s.startsWith("* ")) || (s.startsWith("\t-")) || (s.startsWith("\t*"))){
+              else if(s.equals("")){
+            	  newNode = new Block();
+            	  
+            	  s = "<br>";
+            	  newNode.setData(s);
+                  document.insertNode(newNode);
+                  break;
+              }
+              else if(cuttingFfont(s, "*") || cuttingFfont(s, "+") || cuttingFfont(s, "-")){
                 newNode = new ItemList();
 
                 s = s.substring(2, s.length()); 
@@ -122,7 +146,6 @@ public class PlainVisitor implements MDElementVisitor{
                   break;
               }
               else{  //the string has nothing, set Block node
-
                   newNode = new Block();
                   
                   newNode.setData(s);
@@ -137,7 +160,7 @@ public class PlainVisitor implements MDElementVisitor{
           System.err.println(e); 
           System.exit(1);
       } 
-
+     
 
   }
 }

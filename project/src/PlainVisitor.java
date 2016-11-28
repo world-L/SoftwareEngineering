@@ -36,9 +36,15 @@ public class PlainVisitor implements MDElementVisitor{
   }else if(node instanceof ItemList){
     ItemList itemlist = (ItemList)node;
     
-    itemlist.setHead("<li>");
-    itemlist.setTail("</li>");
+    itemlist.setHead("<ul><li>");
+    itemlist.setTail("</li></ul>");
     itemlist.setHtml(); 
+  }else if(node instanceof ItemListOrdered){
+	  ItemListOrdered itemlist = (ItemListOrdered)node;
+	    
+	    itemlist.setHead("<ol><li>");
+	    itemlist.setTail("</li></ol>");
+	    itemlist.setHtml(); 
   }else{
      Block block = (Block)node;
 
@@ -62,14 +68,13 @@ public class PlainVisitor implements MDElementVisitor{
           int count = 0;
 
           while ((s = in.readLine()) != null) { //read file until detect the EOF
-
               nested = 0;
-
-              while(true){  // iterate until string has no item
               
+              while(true){  // iterate until string has no item
               Node newNode;
-
-              if(s.startsWith("#")){  //check the string contain header item
+              if(s.equals(""))
+            	  break;
+              else if(s.startsWith("#")){  //check the string contain header item
                   int i;
                   for(i = 1;i<s.length();i++)
                     if(s.charAt(i) != '#')break;
@@ -106,6 +111,15 @@ public class PlainVisitor implements MDElementVisitor{
                 newNode.setData(s);
                 document.insertNode(newNode);
                 break;
+              }
+              else if((s.charAt(0) >='0') && (s.charAt(0)<='9') && (s.charAt(1)=='.')){
+            	  newNode = new ItemListOrdered();
+
+                  s = s.substring(2, s.length()); 
+
+                  newNode.setData(s);
+                  document.insertNode(newNode);
+                  break;
               }
               else{  //the string has nothing, set Block node
 

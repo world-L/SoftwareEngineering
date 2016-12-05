@@ -21,7 +21,7 @@ public class CommandCheck{
 				if(args[0].equals("-help")){	// print help message and return
 
 					this.help();
-					System.exit(1);
+					return null;
 
 				}
 
@@ -117,7 +117,7 @@ public class CommandCheck{
 			}
 		}catch(Exception e){
 				System.err.println(e);
-				System.exit(1);
+				return null;
 		}		
 			
 	
@@ -189,7 +189,7 @@ public class CommandCheck{
 
 		boolean check = false;
 		
-		check = (check || output.contains("\\"));
+		check = output.contains("\\");
 		check = (check || output.contains("/"));
 		check = (check || output.contains(":"));
 		check = (check || output.contains("*"));

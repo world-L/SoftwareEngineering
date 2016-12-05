@@ -13,6 +13,8 @@ public class Main{
 		ArrayList<String> html = new ArrayList<String>();
 
 		format = check.receive(args);//check command input and return format				
+		if(format == null)
+			return;
 
 		if(format.getnumOfFile() == 0) return;
 

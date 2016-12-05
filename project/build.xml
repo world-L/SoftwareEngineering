@@ -1,50 +1,122 @@
-<project name = "Project" default = "compile" basedir = ".">
+<project name = "Project" default = "build" basedir = "." xmlns:jacoco="antlib:org.jacoco.ant">
 	<description>Simple Test</description>
+
+	<property file = "${basedir}/build.properties"/>
 
 
 	<property name="app.name" value="Project"/>
-  	<property name="app.path" value="/${app.name}"/>
-  	<property name="app.version" value="0.1-dev"/>
+  <property name="app.path" value="/${app.name}"/>
+  <property name="app.version" value="0.1-dev"/>
 
 	<property name="build.home" value="${basedir}/classes"/>
  	<property name="dist.home" value="${basedir}/dist"/>
-  	<property name="docs.home" value="${basedir}/docs"/>
-  	<property name="src.home" value="${basedir}/src"/>
+  <property name="docs.home" value="${basedir}/docs"/>
+  <property name="src.home" value="${basedir}/src"/>
+  <property name="test.home" value="${basedir}/test"/>
+  <property name="test.report" value="${basedir}/report"/>
 
+  <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+    <classpath path="${basedir}/lib/jacocoant.jar"/>
+  </taskdef>  
 
   <target name="clean"
    description="Delete old build and dist directories">
     <delete dir="${build.home}"/>
     <delete dir="${dist.home}"/>
+    <delete dir="${test.report}"/>
   </target>
  
   <target name="prepare" depends="clean">
 
   	<mkdir dir="${build.home}"/>
     <mkdir dir="${dist.home}"/>
-
+    <mkdir dir="${test.report}"/>
   	
   </target>
 
-  <path id="project.classpath">
-        <fileset dir="${basedir}/lib" includes="*.jar" />
-  </path>
-  <target name="compile" depends="prepare">
+
+  <target name="build" depends="prepare">
 
   	<javac srcdir="${src.home}"
           destdir="${build.home}" debug = "true" 
           includeantruntime="false">
-      <classpath refid = "project.classpath"/>      
+      <classpath path = "${basedir}/lib/jtidy-r938.jar"/> 
+    </javac>
+    <javac srcdir="${test.home}"
+          destdir="${test.home}" debug = "true" 
+          includeantruntime="false">
+      <classpath path = "${build.home}"/>
+      <classpath path = "${basedir}/lib/junit-4.12.jar"/>  
     </javac>
 
   </target>
 
-  <jar destfile = "${basedir}/project.jar" basedir="${build.home}">
-    <zipgroupfileset dir="lib" includes="*.jar"/>
+  <jar destfile = "${basedir}/project.jar" basedir="${build.home}" excludes = "${basedir}/lib/**">
+    <zipgroupfileset dir="lib" includes="jtidy-r938.jar"/>
     <manifest>
         <attribute name="Main-Class" value="Main"/>
     </manifest>
   </jar>
+
+  <target name="test" depends ="build">
+    <junit showoutput="true" printsummary="on" enabletestlistenerevents="true" fork="true" >
+      <classpath path="${build.home}"/>
+      <classpath path="${test.home}"/>
+      <classpath path="${basedir}/lib/junit-4.12.jar" />
+      <classpath path="${basedir}/lib/hamcrest-core-1.3.jar" />
+
+
+      <formatter type="plain" usefile="false" />
+
+      <test name="CommandCheckTest">
+      </test>
+    </junit>
+  </target>
+
+  <target name="cov-test" depends ="build">
+    <jacoco:coverage>
+      <junit showoutput="true" printsummary="on" enabletestlistenerevents="true" fork="true">
+        <classpath path="${build.home}"/>
+        <classpath path="${test.home}"/>
+        <classpath path="${basedir}/lib/junit-4.12.jar" />
+        <classpath path="${basedir}/lib/hamcrest-core-1.3.jar" />
+
+        <formatter type="plain" usefile="false" />
+
+        <test name="CommandCheckTest">
+        </test>
+      </junit>
+    </jacoco:coverage>
+
+    <jacoco:coverage>
+      <java classname="CommandCheckTest" fork="true">
+        <classpath path="${build.home}"/>
+        <classpath path="${test.home}"/>
+        <classpath path="${basedir}/lib/junit-4.12.jar" />
+        <classpath path="${basedir}/lib/hamcrest-core-1.3.jar" />
+      </java>
+    </jacoco:coverage>
+  </target>
+
+  <target name="cov-report" depends="cov-test">
+    <jacoco:report>
+      <executiondata>
+        <file file="jacoco.exec" />
+      </executiondata>
+
+      <structure name="test">
+        <classfiles>
+          <fileset dir="${build.home}" />
+        </classfiles>
+        <sourcefiles>
+          <fileset dir="${src.home}" />
+        </sourcefiles>
+      </structure>
+
+      <html destdir="${test.report}" />
+    </jacoco:report>
+
+  </target>
 
 
 </project>

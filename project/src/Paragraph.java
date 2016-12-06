@@ -1,35 +1,27 @@
-public class itemListWord extends Node{
+//Block class that represent <p> tag
 
-	private char word;
+public class Paragraph extends Node{
 	private String head;
 	private String tail;
 
-	//itemList word
-	public itemListWord(char word){
-		this.word = word;
-	}
-
-
-	public int getItemListWord(){
-		return this.word;
-	}
-
+	public Paragraph(){}
 
 	public void setHtml(){
 		String html = new String();
 
 		html = this.head;
 		for(Node inNode : this.otherNode)
-        	html = html + inNode.getHtml();
-
+        	html = html + inNode.getHtml();    
+      	
       	for(Tokens token : this.token)
-        	html = html + token.getItem();
-
+        	html = html + token.getItem();    
+      	
 		html = html + this.tail;
 
 		super.html = html;
 
 	}
+
 	public void setHead(String head){
 		this.head = head;
 	}
@@ -37,6 +29,4 @@ public class itemListWord extends Node{
 	public void setTail(String tail){
 		this.tail = tail;
 	}
-
-
 }

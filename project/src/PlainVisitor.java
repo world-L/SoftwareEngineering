@@ -3,6 +3,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+import javax.swing.plaf.basic.BasicTabbedPaneUI.TabbedPaneLayout;
+
 //PlainVisitor class that actually read, parse file and generate html code as plain style
 
 public class PlainVisitor implements MDElementVisitor {
@@ -12,7 +14,7 @@ public class PlainVisitor implements MDElementVisitor {
 	public int tabCount(String string) {
 		int tabcount = 0;
 		for (int i = 0; i < string.length(); i++) {
-			string = string.substring(0);
+			string = string.substring(i);
 
 			if (string.startsWith("\t") || string.startsWith("    "))
 				tabcount++;
@@ -72,12 +74,12 @@ public class PlainVisitor implements MDElementVisitor {
 			header.setHead("<h" + header.getLevel() + ">");
 			header.setTail("</h" + header.getLevel() + ">");
 			header.setHtml();
-		} else if (node instanceof Horizon) {
+		}if (node instanceof Horizon) {
 			Horizon horizon = (Horizon) node;
 
 			horizon.setHead("<hr/>");
 			horizon.setHtml();
-		} else if (node instanceof ItemList) {
+		}if (node instanceof ItemList) {
 			ItemList itemlist = (ItemList) node;
 
 			itemlist.setStarting("<ul>");
@@ -85,7 +87,7 @@ public class PlainVisitor implements MDElementVisitor {
 			itemlist.setTail("</li>");
 			itemlist.setEnding("</ul>");
 			itemlist.setHtml();
-		} else if (node instanceof ItemListOrdered) {
+		} if (node instanceof ItemListOrdered) {
 			ItemListOrdered itemlist = (ItemListOrdered) node;
 
 			itemlist.setStarting("<ol>");
@@ -93,7 +95,7 @@ public class PlainVisitor implements MDElementVisitor {
 			itemlist.setTail("</li>");
 			itemlist.setEnding("</ol>");
 			itemlist.setHtml();
-		} else if (node instanceof Block) {
+		} if (node instanceof Block) {
 			Block block = (Block) node;
 
 			block.setStarting("<blockquote>");
@@ -101,7 +103,7 @@ public class PlainVisitor implements MDElementVisitor {
 			block.setTail("</p>");
 			block.setEnding("</blockquote>");
 			block.setHtml();
-		} else {
+		} if(node instanceof Paragraph){
 			Paragraph paragraph = (Paragraph) node;
 
 			paragraph.setHead("<p>");
@@ -116,22 +118,31 @@ public class PlainVisitor implements MDElementVisitor {
 		try {
 
 			BufferedReader in = new BufferedReader(new FileReader(document.filename));
-			String firstLine;
 			String nextLine = in.readLine(); // Next line of 'first line'
+			String firstLine;
 
 			int unorderCount = 0;
 			int orderCount = 0;
 			int blockCount = 0;
-			System.out.println("sssssssssss");
+			int tabCount = 0;
 
-			while ((firstLine = in.readLine()) != null) {
-				while (firstLine.equals("") || firstLine.equals(" ") || firstLine.equals("\t"))
-					firstLine = in.readLine();
+			do {
+				firstLine = in.readLine();
+				if (firstLine != null){
+					while (firstLine.equals("") || firstLine.equals("\t") || firstLine.equals(" "))
+						firstLine = in.readLine();
+				}
+				else if(firstLine == null)
+					firstLine = new String(" ");
+				
+				
+
 				/* line setting */
 				String changeLine = new String(nextLine);
 				nextLine = new String(firstLine);
 				firstLine = new String(changeLine);
 
+				System.out.println(firstLine);
 				while (true) { // iterate until string has no item
 					Node newNode;
 
@@ -139,7 +150,7 @@ public class PlainVisitor implements MDElementVisitor {
 						break;
 					}
 					/* two 'if' statement is about header */
-					else if (firstLine.startsWith("#")) {
+					else if (cuttingF(firstLine).startsWith("#")) {
 						int i;
 						for (i = 1; i < firstLine.length(); i++)
 							if (firstLine.charAt(i) != '#')
@@ -150,9 +161,12 @@ public class PlainVisitor implements MDElementVisitor {
 						firstLine = firstLine.substring(i, firstLine.length());
 						newNode.setData(firstLine);
 						document.insertNode(newNode);
-						unorderCount = 0;
+						if (tabCount(firstLine) < tabCount) {
+							unorderCount = 0;
+							blockCount = 0;
+						}
 						break;
-					} else if (nextLine.startsWith("===") || nextLine.startsWith("---")) {
+					} if (nextLine.startsWith("===") || nextLine.startsWith("---")) {
 						if (nextLine.startsWith("==="))
 							newNode = new Header(1);
 						else
@@ -162,80 +176,106 @@ public class PlainVisitor implements MDElementVisitor {
 
 						newNode.setData(firstLine);
 						document.insertNode(newNode);
-						unorderCount = 0;
+						if (tabCount(firstLine) < tabCount) {
+							unorderCount = 0;
+							blockCount = 0;
+						}
 						break;
 
 						/* blockquote statement */
 					} else if (cuttingF(firstLine).startsWith(">")) {
-						newNode = new Block();
+						boolean showstarting = false, showEnding = false;
+						int temp1, temp2 = 0;
+
+						temp1 = tabCount(firstLine) + 1;
+						if (cuttingF(nextLine).startsWith(">"))
+							temp2 = tabCount(nextLine) + 1;
+						else
+							temp2 = tabCount(nextLine);
+
+						if (blockCount < temp1)
+							showstarting = true;
+						if (temp1 > temp2)
+							showEnding = true;
+
+						newNode = new Block(showstarting, showEnding);
 
 						firstLine = cuttingF(firstLine).substring(1);
 						newNode.setData(firstLine);
 						document.insertNode(newNode);
-						unorderCount = 0;
+
+						if (tabCount(firstLine) < tabCount)
+							unorderCount = 0;
+
+						blockCount = temp1;
+						tabCount = tabCount(firstLine);
 						break;
 
 					} else if (firstLine.startsWith("***") || firstLine.startsWith("* * *")
-							|| firstLine.startsWith("- - -")) {
+							|| firstLine.startsWith("- - -") || firstLine.startsWith("---")) {
 						newNode = new Horizon();
 
 						newNode.setData(firstLine);
 						document.insertNode(newNode);
-						unorderCount = 0;
+						if (tabCount(firstLine) < tabCount) {
+							unorderCount = 0;
+							blockCount = 0;
+						}
 						break;
 
-					} else if ((cuttingFfont(firstLine, "* ") > 0) || (cuttingFfont(firstLine, "- ") > 0)
-							|| (cuttingFfont(firstLine, "+ ") > 0)) {
+					} else if (cuttingF(firstLine).startsWith("*") || cuttingF(firstLine).startsWith("-")
+							|| cuttingF(firstLine).startsWith("+")) {
 						boolean showstarting = false, showEnding = false;
-
+						int temp1, temp2 = 0;
 						// show <li>...</li>, compare with next line
-						int arr[] = new int[6];
 
-						arr[0] = cuttingFfont(firstLine, "* ");
-						arr[1] = cuttingFfont(firstLine, "- ");
-						arr[2] = cuttingFfont(firstLine, "+ ");
+						temp1 = tabCount(firstLine) + 1;
 
 						if (nextLine.startsWith("---") || nextLine.startsWith("***") || nextLine.startsWith("* * *")
 								|| nextLine.startsWith("- - -"))
-							;
-						else {
-							arr[3] = cuttingFfont(nextLine, "* ");
-							arr[4] = cuttingFfont(nextLine, "- ");
-							arr[5] = cuttingFfont(nextLine, "+ ");
-						}
+							temp2 = 0;
+						else if (cuttingF(nextLine).startsWith("*") || cuttingF(nextLine).startsWith("-")
+								|| cuttingF(nextLine).startsWith("+"))
+							temp2 = tabCount(nextLine) + 1;
 
-						if (unorderCount < arr[0] + arr[1] + arr[2])
+						if (unorderCount < temp1)
 							showstarting = true;
-						if (arr[0] + arr[1] + arr[2] > arr[3] + arr[4] + arr[5])
+						if (temp1 > temp2)
 							showEnding = true;
 
 						newNode = new ItemList(showstarting, showEnding);
-						unorderCount = arr[0] + arr[1] + arr[2];
 						firstLine = firstLine.substring(2, firstLine.length());
-
 						newNode.setData(firstLine);
 						document.insertNode(newNode);
+
+						unorderCount = temp1;
+						tabCount = tabCount(firstLine);
 						break;
 					} else if ((firstLine.charAt(0) >= '0') && (firstLine.charAt(0) <= '9')
 							&& (firstLine.charAt(1) == '.')) {
-						boolean showstarting = true, showEnding = true;
+						boolean showstarting = false, showEnding = false;
+						int temp1, temp2 = 0;
 
-						if (unorderCount != 0)
-							showstarting = false;
-						if ((tabCount(firstLine) <= tabCount(nextLine))
-								|| ((nextLine.charAt(0) >= '0') && (nextLine.charAt(0) <= '9') && (nextLine.charAt(1) == '.'))) {
-							System.out.println(firstLine);
-							showEnding = false;
-							unorderCount = 0;
+						temp1 = tabCount(firstLine) + 1;
+						if (nextLine.length() >= 2) {
+							if ((cuttingF(nextLine).charAt(0) >= '0') && (cuttingF(nextLine).charAt(0) <= '9')
+									&& cuttingF(nextLine).charAt(1) == '.')
+								temp2 = tabCount(nextLine) + 1;
+							else
+								temp2 = tabCount(nextLine);
 						}
+						if (orderCount < temp1)
+							showstarting = true;
+						if (temp1 > temp2)
+							showEnding = true;
 
 						newNode = new ItemListOrdered(showstarting, showEnding);
-
 						firstLine = firstLine.substring(2, firstLine.length());
-
 						newNode.setData(firstLine);
 						document.insertNode(newNode);
 
+						orderCount = temp1;
+						tabCount = tabCount(firstLine);
 						break;
 					} else { // the string has nothing, set Block node
 						newNode = new Paragraph();
@@ -246,7 +286,7 @@ public class PlainVisitor implements MDElementVisitor {
 						break;
 					}
 				}
-			}
+			} while (!nextLine.equals(" "));
 			in.close();
 		} catch (IOException e) {
 			System.err.println(e);

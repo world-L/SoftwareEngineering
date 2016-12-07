@@ -5,16 +5,25 @@
 
 public class StyleText extends Tokens{
 
-	private String text;
+	
+	
 
 	public StyleText(String text){
-		this.text = text;	
+		super.text = text;
+		//handle(text);
 	}
 		
 	public void accept(MDElementVisitor visitor){}
-
-	public String getItem(){
-		return this.text;
-	}
+	/*
+	public void handle(String text){
+		if(text.contains("file")){
+			String newText=text.replace("file","elif");
+			setItem(newText);
+		}
+		if(text.contains("&")){
+			String newText=text.replace("&","Goooooooood");
+			setItem(newText);
+		}
+	}*/
 
 }

@@ -24,7 +24,7 @@ public class PlainVisitor implements MDElementVisitor {
 		return tabcount;
 	}
 
-	public String cuttingF(String string) {
+	public String cuttingFront(String string) {
 		for (int i = 0; i < string.length(); i++) {
 			string = string.substring(i);
 
@@ -34,24 +34,6 @@ public class PlainVisitor implements MDElementVisitor {
 				break;
 		}
 		return string;
-	}
-
-	public int cuttingFfont(String string, String special) {
-		int real = 0;
-		for (int i = 0; i < string.length(); i++) {
-			string = string.substring(i);
-
-			if (string.startsWith(" "))
-				;
-			else if (string.startsWith("\t"))
-				real++;
-			else if (string.startsWith(special)) {
-				real++;
-				break;
-			} else
-				break;
-		}
-		return real;
 	}
 
 	// the function that parse raw data of the node to token and set html code
@@ -150,7 +132,7 @@ public class PlainVisitor implements MDElementVisitor {
 						break;
 					}
 					/* two 'if' statement is about header */
-					else if (cuttingF(firstLine).startsWith("#")) {
+					else if (cuttingFront(firstLine).startsWith("#")) {
 						int i;
 						for (i = 1; i < firstLine.length(); i++)
 							if (firstLine.charAt(i) != '#')
@@ -183,12 +165,12 @@ public class PlainVisitor implements MDElementVisitor {
 						break;
 
 						/* blockquote statement */
-					} else if (cuttingF(firstLine).startsWith(">")) {
+					} else if (cuttingFront(firstLine).startsWith(">")) {
 						boolean showstarting = false, showEnding = false;
 						int temp1, temp2 = 0;
 
 						temp1 = tabCount(firstLine) + 1;
-						if (cuttingF(nextLine).startsWith(">"))
+						if (cuttingFront(nextLine).startsWith(">"))
 							temp2 = tabCount(nextLine) + 1;
 						else
 							temp2 = tabCount(nextLine);
@@ -200,7 +182,7 @@ public class PlainVisitor implements MDElementVisitor {
 
 						newNode = new Block(showstarting, showEnding);
 
-						firstLine = cuttingF(firstLine).substring(1);
+						firstLine = cuttingFront(firstLine).substring(1);
 						newNode.setData(firstLine);
 						document.insertNode(newNode);
 
@@ -223,8 +205,8 @@ public class PlainVisitor implements MDElementVisitor {
 						}
 						break;
 
-					} else if (cuttingF(firstLine).startsWith("*") || cuttingF(firstLine).startsWith("-")
-							|| cuttingF(firstLine).startsWith("+")) {
+					} else if (cuttingFront(firstLine).startsWith("*") || cuttingFront(firstLine).startsWith("-")
+							|| cuttingFront(firstLine).startsWith("+")) {
 						boolean showstarting = false, showEnding = false;
 						int temp1, temp2 = 0;
 						// show <li>...</li>, compare with next line
@@ -234,8 +216,8 @@ public class PlainVisitor implements MDElementVisitor {
 						if (nextLine.startsWith("---") || nextLine.startsWith("***") || nextLine.startsWith("* * *")
 								|| nextLine.startsWith("- - -"))
 							temp2 = 0;
-						else if (cuttingF(nextLine).startsWith("*") || cuttingF(nextLine).startsWith("-")
-								|| cuttingF(nextLine).startsWith("+"))
+						else if (cuttingFront(nextLine).startsWith("*") || cuttingFront(nextLine).startsWith("-")
+								|| cuttingFront(nextLine).startsWith("+"))
 							temp2 = tabCount(nextLine) + 1;
 
 						if (unorderCount < temp1)
@@ -258,8 +240,8 @@ public class PlainVisitor implements MDElementVisitor {
 
 						temp1 = tabCount(firstLine) + 1;
 						if (nextLine.length() >= 2) {
-							if ((cuttingF(nextLine).charAt(0) >= '0') && (cuttingF(nextLine).charAt(0) <= '9')
-									&& cuttingF(nextLine).charAt(1) == '.')
+							if ((cuttingFront(nextLine).charAt(0) >= '0') && (cuttingFront(nextLine).charAt(0) <= '9')
+									&& cuttingFront(nextLine).charAt(1) == '.')
 								temp2 = tabCount(nextLine) + 1;
 							else
 								temp2 = tabCount(nextLine);

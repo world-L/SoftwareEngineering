@@ -22,8 +22,8 @@ public class Main{
 
 			if(format.getStyleIndex(i) == 1)	
 				visitor = new PlainVisitor();
-			else if(format.getStyleIndex(i) == 2)
-				visitor = new FancyVisitor();	
+			//else if(format.getStyleIndex(i) == 2)
+				//visitor = new FancyVisitor();	
 			else 
 				visitor = new SlideVisitor();	//assign visitor
 

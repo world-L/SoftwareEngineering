@@ -1,16 +1,25 @@
+import java.lang.Thread.State;
 
 public class ItemList extends Node{
 	private String head;
 	private String tail;
-
-	//header has level from 1 to 6
-	public ItemList(){
+	
+	private boolean showStarting, showEnding;
+	private String starting;
+	private String ending;
+	
+	public ItemList(boolean showStarting, boolean showEnding){
+		this.showStarting = showStarting;
+		this.showEnding = showEnding;
 	}
-
+	
 	public void setHtml(){
 		String html = new String();
-
-		html = this.head;
+		if(showStarting)
+			html = this.starting;
+		
+		html = html + this.head;
+		
 		for(Node inNode : this.otherNode)
         	html = html + inNode.getHtml();    
       	
@@ -18,9 +27,15 @@ public class ItemList extends Node{
         	html = html + token.getItem();    
       	
 		html = html + this.tail;
-
+		
+		if(showEnding)
+			html = html+ this.ending;
 		super.html = html;
 
+	}
+	
+	public void setStarting(String starting){
+		this.starting = starting;
 	}
 	public void setHead(String head){
 		this.head = head;
@@ -28,6 +43,9 @@ public class ItemList extends Node{
 
 	public void setTail(String tail){
 		this.tail = tail;
+	}
+	public void setEnding(String ending){
+		this.ending = ending;
 	}
 
 }

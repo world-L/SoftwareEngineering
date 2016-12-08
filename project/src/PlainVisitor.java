@@ -16,7 +16,9 @@ public class PlainVisitor implements MDElementVisitor {
 		for (int i = 0; i < string.length(); i++) {
 			string = string.substring(i);
 
-			if (string.startsWith("\t") || string.startsWith("    "))
+			if (string.startsWith("\t"))
+				tabcount++;
+			else if(string.startsWith("    "))
 				tabcount++;
 			else
 				break;
@@ -28,11 +30,14 @@ public class PlainVisitor implements MDElementVisitor {
 		for (int i = 0; i < string.length(); i++) {
 			string = string.substring(i);
 
-			if (string.startsWith(" ") || string.startsWith("\t"))
+			if (string.startsWith(" "))
+				continue;
+			else if(string.startsWith("\t"))
 				continue;
 			else
 				break;
 		}
+
 		return string;
 	}
 

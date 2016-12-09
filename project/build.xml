@@ -71,8 +71,10 @@
       <test name="PlainVisitorTest">
       </test>
       <test name = "NodeTest">
-        </test>
-        <test name="EtcTest">
+      </test>
+      <test name="EtcTest">
+      </test>
+      <test name="TokenTest">
       </test>
       <test name="CommandCheckTest">
       </test>
@@ -89,9 +91,8 @@
         <classpath path="${basedir}/lib"/>
         <classpath path="${basedir}/lib/junit-4.12.jar" />
         <classpath path="${basedir}/lib/hamcrest-core-1.3.jar" />
-<classpath>
- 
-            <pathelement path="${docs.home}"/>
+        <classpath>
+             <pathelement path="${docs.home}"/>
         </classpath>
         <formatter type="plain" usefile="false" />
 
@@ -100,6 +101,8 @@
         <test name = "NodeTest">
         </test>
         <test name="EtcTest">
+        </test>
+        <test name="TokenTest">
         </test>
         <test name="CommandCheckTest">
         </test>

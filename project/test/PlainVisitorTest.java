@@ -3,12 +3,7 @@ import static org.junit.Assert.* ;
 
 public class PlainVisitorTest
 {
-	@Test
-	public void testTabCount() {
-		PlainVisitor p = new PlainVisitor() ;
-		String s = "\t    testTabCount";
-		assertTrue(p.tabCount(s)==2) ;
-	}
+
 	@Test
 	public void testCuttingFront() {
 		PlainVisitor p = new PlainVisitor() ;

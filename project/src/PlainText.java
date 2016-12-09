@@ -14,9 +14,6 @@ public class PlainText extends Tokens
 		group(text);
 	}
 
-	public void accept(MDElementVisitor visitor){
-
-	}
 
 	public void group(String text){
 
@@ -24,15 +21,37 @@ public class PlainText extends Tokens
 			boolean convert=false;
 			for(int a = 0;a<tempToken.length;a++){
 			//for htmlText
-			if((text.contains("<br>"))||(text.contains("<table>"))
-				||(text.contains("</table>"))||(text.contains("<tr>"))||(text.contains("</tr>"))
-				||(text.contains("<td>"))||(text.contains("</td>"))||(text.contains("<a>"))||(text.contains("<img>"))||(text.contains("<li>"))
-				||(text.contains("</ul>"))||(text.contains("</ol>"))){
+			if(text.contains("<table>"))
 				setItem(text);
+			else if(text.contains("</table>"))
+				setItem(text);
+			else if(text.contains("<tr>"))
+				setItem(text);
+			else if(text.contains("<td>"))
+				setItem(text);
+			else if(text.contains("</td>"))
+				setItem(text);
+			else if(text.contains("<a>"))
+				setItem(text);
+			else if(text.contains("<img>"))
+				setItem(text);
+			else if(text.contains("</tr>"))
+				setItem(text);
+			else if(text.contains("<br>"))
+				setItem(text);
+			else if((!convert)&&(text.contains("<http://"))){
+				int start=text.indexOf("<http");
+				String sub=text.substring(start+1);
+				if(sub.contains(">"))
+				{
+					int end=text.indexOf(">");
+					String url=text.substring(start+1,end);
+					convert=true;
+					convertUrl(url);
+				}	
+
 			}
-
-
-			else if((!convert)&&((text.contains("<http://"))||(text.contains("<https://")))){
+			else if((!convert)&&(text.contains("<https://"))){
 				int start=text.indexOf("<http");
 				String sub=text.substring(start+1);
 				if(sub.contains(">"))
@@ -56,11 +75,32 @@ public class PlainText extends Tokens
 				convertCh(text);
 			}
 
-			else if(text.contains("\\\\")||text.contains("\\#")||text.contains("\\'")||text.contains("\\{")||text.contains("\\}")
-			||text.contains("\\[")||text.contains("\\]")||text.contains("\\(")
-			||text.contains("\\)")||text.contains("\\.")||text.contains("\\!")||text.contains("\\*")||text.contains("\\_") ){
+			else if(text.contains("\\\\"))
 				convertEscape(text);
-			}
+			else if(text.contains("\\#"))
+				convertEscape(text);
+			else if(text.contains("\\'"))
+				convertEscape(text);
+			else if(text.contains("\\{"))
+				convertEscape(text);
+			else if(text.contains("\\}"))
+				convertEscape(text);
+			else if(text.contains("\\["))
+				convertEscape(text);
+			else if(text.contains("\\]"))
+				convertEscape(text);
+			else if(text.contains("\\("))
+				convertEscape(text);
+			else if(text.contains("\\)"))
+				convertEscape(text);
+			else if(text.contains("\\."))
+				convertEscape(text);
+			else if(text.contains("\\!"))
+				convertEscape(text);
+			else if(text.contains("\\*"))
+				convertEscape(text);
+			else if(text.contains("\\_"))
+				convertEscape(text);
 
 			//for style text
 			else if(text.contains("*"))
@@ -109,11 +149,6 @@ public class PlainText extends Tokens
 					convertSt(text);
 				}
 			}
-
-
-
-
-
 			//for plainText
 			else{
 				setItem(text);
@@ -125,7 +160,11 @@ public class PlainText extends Tokens
 	public void convertCh(String text){
 			if(text.contains("&")){
 				int a=text.indexOf("&");
-				String sub=text.substring(a,a+4);
+				String sub = "";
+				
+				if(text.length()>3)
+					text.substring(a,a+3);
+
 				if(!sub.equals("&gt;"))
 				{	String newText=text.replace("&","&amp;");
 					setItem(newText);}
@@ -189,6 +228,11 @@ public class PlainText extends Tokens
 			}else if(text.contains("\\!")){
 				//String change = escape+"!";
 				String newText= text.replace("\\!","!");
+				setItem(newText);
+			}
+			else if(text.contains("\\_")){
+				//String change = escape+"!";
+				String newText= text.replace("\\_","_");
 				setItem(newText);
 			}
 	}

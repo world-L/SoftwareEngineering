@@ -1,9 +1,6 @@
-import java.awt.SecondaryLoop;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-
-import javax.swing.plaf.basic.BasicTabbedPaneUI.TabbedPaneLayout;
 
 //PlainVisitor class that actually read, parse file and generate html code as plain style
 

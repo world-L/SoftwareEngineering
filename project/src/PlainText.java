@@ -3,58 +3,65 @@
 
 public class PlainText extends Tokens{
 
-	
+
 	//private String test;
 
-	
+
 
 	public PlainText(String text){
 		super.text = text;
-		
-		group(text);	
+		group(text);
+	}
+
+	public void accept(MDElementVisitor visitor){
+
 	}
 
 	public void group(String text){
-			
+
+			String[] tempToken=text.split(" ");
+			for(int a = 0;a<tempToken.length;a++){
 			//for htmlText
 			if((text.contains("<br>"))||(text.contains("<table>"))
 				||(text.contains("</table>"))||(text.contains("<tr>"))||(text.contains("</tr>"))
-				||(text.contains("<td>"))||(text.contains("</td>"))||(text.contains("<a>"))||(text.contains("<img>"))){
+				||(text.contains("<td>"))||(text.contains("</td>"))||(text.contains("<a>"))||(text.contains("<img>"))||(text.contains("<li>"))
+				||(text.contains("</ul>"))||(text.contains("</ol>"))){
 				setItem(text);
 			}
 
-			//for plainText
+			 //for plainText
 			if(text.contains(">")){
 				convertCh(text);
 			}
-			if(text.contains("<")){
+			else if(text.contains("<")){
 				convertCh(text);
 			}
-		    if(text.contains("&")){
+		    else if(text.contains("&")){
 				convertCh(text);
 			}
-			if( text.contains("\\")||text.contains("#")||text.contains("'")||text.contains("{")||text.contains("}")
-			||text.contains("[")||text.contains("]")||text.contains("(")
-			||text.contains(")")||text.contains(".")||text.contains("!") ){
-				convertEscape(text); 
+
+			else if(text.contains("\\\\")||text.contains("\\#")||text.contains("\\'")||text.contains("\\{")||text.contains("\\}")
+			||text.contains("\\[")||text.contains("\\]")||text.contains("\\(")
+			||text.contains("\\)")||text.contains("\\.")||text.contains("\\!")||text.contains("\\*")||text.contains("\\_") ){
+				convertEscape(text);
 			}
-			
-			
+
 			//for style text
-			if(text.contains("*"))
+			else if(text.contains("*"))
 			{
 				int x=text.indexOf("*");
 				String temp=text.substring(x+1);
-				if(temp.contains("*")){
-					convertSt(text);
+				if((temp.contains("*"))&&(text.charAt(x+1)!=' ')){
+					convertSt(text+" ");
 				}
 				else{
 						//plain text that escape character
-						convertEscape(text);
-				}	
-			
+						//convertEscape(text);
+					setItem(text);
+				}
+
 			}
-			if(text.contains("_")){
+			else if(text.contains("_")){
 				int x=text.indexOf("_");
 				String temp=text.substring(x+1);
 				if((temp.contains("_"))&&(text.charAt(x+1)!=' ')){
@@ -62,34 +69,43 @@ public class PlainText extends Tokens{
 				}
 				else{
 						//plain text that escape character
-						convertEscape(text);
-				}	
-		
+					//convertEscape(text);
+					setItem(text);
+				}
+
 			}
-			 if(text.contains("**")){
+			else if(text.contains("**")){
 				int x=text.indexOf("**");
 				String temp=text.substring(x+2);
-				
+
 				if((temp.contains("**"))&&(text.charAt(x+2)!=' ')){
 					convertSt(text);
-				}	
+				}
+				else{
+					setItem(text);
+				}
 			}
-			 if(text.contains("__")){
+			else if(text.contains("__")){
 				int x=text.indexOf("__");
 				String temp=text.substring(x+2);
-				
+
 				if((temp.contains("__"))&&(text.charAt(x+2)!=' ')){
 					convertSt(text);
-				}	
+				}
 			}
+
+
+
+
 
 			//for plainText
 			else{
 				setItem(text);
 			}
+		}
 
 	}
-	
+
 	public void convertCh(String text){
 			if(text.contains("&")){
 				int a=text.indexOf("&");
@@ -107,57 +123,57 @@ public class PlainText extends Tokens{
 	}
 
 	public void convertEscape(String text){
-			
-			String escape="\\";
 
-			if(text.contains("\\")){
-				String change = escape+"\\";
-				String newText= text.replace("\\",change);
-				setItem(newText);	
-			}else if(text.contains("*")){
-				String change = escape+"*";
-				String newText= text.replace("*",change);
+
+
+			if(text.contains("\\\\")){
+				//String change = "\\\\";
+				String newText= text.replace("\\\\","\\");
 				setItem(newText);
-			}else if(text.contains("#")){
-				String change = escape+"#";
-				String newText= text.replace("#",change);
-				setItem(newText);	
-			}else if(text.contains("'")){
-				String change = escape+"'";
-				String newText= text.replace("'",change);
-				setItem(newText);	
-			}else if(text.contains("{")){
-				String change = escape+"{";
-				String newText= text.replace("{",change);
-				setItem(newText);	
-			}else if(text.contains("}")){
-				String change = escape+"}";
-				String newText= text.replace("}",change);
-				setItem(newText);	
-			}else if(text.contains("[")){
-				String change = escape+"[";
-				String newText= text.replace("[",change);
-				setItem(newText);	
-			}else if(text.contains("]")){
-				String change = escape+"]";
-				String newText= text.replace("]",change);
-				setItem(newText);	
-			}else if(text.contains("(")){
-				String change = escape+"(";
-				String newText= text.replace("(",change);
-				setItem(newText);	
-			}else if(text.contains(")")){
-				String change = escape+")";
-				String newText= text.replace(")",change);
-				setItem(newText);	
-			}else if(text.contains(".")){
-				String change = escape+".";
-				String newText= text.replace(".",change);
-				setItem(newText);	
-			}else if(text.contains("!")){
-				String change = escape+"!";
-				String newText= text.replace("!",change);
-				setItem(newText);	
+			}else if(text.contains("\\*")){
+				//String change = escape+"*";
+				String newText= text.replace("\\*","*");
+				setItem(newText);
+			}else if(text.contains("\\#")){
+				//String change = escape+"#";
+				String newText= text.replace("\\#","#");
+				setItem(newText);
+			}else if(text.contains("\\'")){
+				//String change = escape+"'";
+				String newText= text.replace("\\'","'");
+				setItem(newText);
+			}else if(text.contains("\\{")){
+				//String change = escape+"{";
+				String newText= text.replace("\\{","{");
+				setItem(newText);
+			}else if(text.contains("\\}")){
+				//String change = escape+"}";
+				String newText= text.replace("\\}","}");
+				setItem(newText);
+			}else if(text.contains("\\[")){
+				//String change = escape+"[";
+				String newText= text.replace("\\[","[");
+				setItem(newText);
+			}else if(text.contains("\\]")){
+				//String change = escape+"]";
+				String newText= text.replace("\\]","]");
+				setItem(newText);
+			}else if(text.contains("\\(")){
+				//String change = escape+"(";
+				String newText= text.replace("\\(","(");
+				setItem(newText);
+			}else if(text.contains("\\)")){
+				//String change = escape+")";
+				String newText= text.replace("\\)",")");
+				setItem(newText);
+			}else if(text.contains("\\.")){
+				//String change = escape+".";
+				String newText= text.replace("\\.",".");
+				setItem(newText);
+			}else if(text.contains("\\!")){
+				//String change = escape+"!";
+				String newText= text.replace("\\!","!");
+				setItem(newText);
 			}
 	}
 

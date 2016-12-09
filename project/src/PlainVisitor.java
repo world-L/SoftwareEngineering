@@ -12,13 +12,13 @@ public class PlainVisitor implements MDElementVisitor {
 	}
 
 	public int tabCount(String string) {
+		string.replace("    ", "\t");
+		
 		int tabcount = 0;
 		for (int i = 0; i < string.length(); i++) {
 			string = string.substring(i);
 
 			if (string.startsWith("\t"))
-				tabcount++;
-			else if(string.startsWith("    "))
 				tabcount++;
 			else
 				break;
@@ -37,8 +37,10 @@ public class PlainVisitor implements MDElementVisitor {
 			else
 				break;
 		}
-
 		return string;
+	}
+	public boolean showTagLater(String tag, int tCount){
+		return true;
 	}
 
 	// the function that parse raw data of the node to token and set html code
@@ -90,6 +92,10 @@ public class PlainVisitor implements MDElementVisitor {
 			block.setTail("</p>");
 			block.setEnding("</blockquote>");
 			block.setHtml();
+		} if(node instanceof EndingSet){
+			EndingSet endingset = (EndingSet) node;
+			endingset.setTag("</ul>");
+			endingset.setHtml();
 		} if(node instanceof Paragraph){
 			Paragraph paragraph = (Paragraph) node;
 
@@ -112,32 +118,39 @@ public class PlainVisitor implements MDElementVisitor {
 			int orderCount = 0;
 			int blockCount = 0;
 			int tabCount = 0;
+			int unTab = 0;
 
 			do {
 				firstLine = in.readLine();
 				if (firstLine != null){
-					while (firstLine.equals("") || firstLine.equals("\t") || firstLine.equals(" "))
+					while (cuttingFront(firstLine).equals(""))
 						firstLine = in.readLine();
 				}
 				else if(firstLine == null)
 					firstLine = new String(" ");
-				
-				
 
 				/* line setting */
 				String changeLine = new String(nextLine);
 				nextLine = new String(firstLine);
 				firstLine = new String(changeLine);
 
-				System.out.println(firstLine);
 				while (true) { // iterate until string has no item
 					Node newNode;
 
 					if (firstLine.equals("") || firstLine.equals(" ") || firstLine.equals("\t")) {
 						break;
 					}
+					
+					
+					if((tabCount(firstLine)<unTab) && (!cuttingFront(firstLine).startsWith("-") && !cuttingFront(firstLine).startsWith("+") && !cuttingFront(firstLine).startsWith("*") )){
+						newNode = new EndingSet();
+						newNode.setData(firstLine);
+						document.insertNode(newNode);
+						unTab = 0;
+					}
+						
 					/* two 'if' statement is about header */
-					else if (cuttingFront(firstLine).startsWith("#")) {
+					if (cuttingFront(firstLine).startsWith("#")) {
 						int i;
 						for (i = 1; i < firstLine.length(); i++)
 							if (firstLine.charAt(i) != '#')
@@ -179,11 +192,14 @@ public class PlainVisitor implements MDElementVisitor {
 							temp2 = tabCount(nextLine) + 1;
 						else
 							temp2 = tabCount(nextLine);
-
-						if (blockCount < temp1)
+						if (blockCount < temp1){
 							showstarting = true;
-						if (temp1 > temp2)
+							blockCount = temp1;
+						}
+						if (temp1 > temp2){
 							showEnding = true;
+							blockCount = 0;
+						}
 
 						newNode = new Block(showstarting, showEnding);
 
@@ -191,10 +207,6 @@ public class PlainVisitor implements MDElementVisitor {
 						newNode.setData(firstLine);
 						document.insertNode(newNode);
 
-						if (tabCount(firstLine) < tabCount)
-							unorderCount = 0;
-
-						blockCount = temp1;
 						tabCount = tabCount(firstLine);
 						break;
 
@@ -224,18 +236,32 @@ public class PlainVisitor implements MDElementVisitor {
 						else if (cuttingFront(nextLine).startsWith("*") || cuttingFront(nextLine).startsWith("-")
 								|| cuttingFront(nextLine).startsWith("+"))
 							temp2 = tabCount(nextLine) + 1;
+						else
+							temp2 = tabCount(nextLine);
 
-						if (unorderCount < temp1)
+						if (unorderCount < temp1){
 							showstarting = true;
-						if (temp1 > temp2)
+							unorderCount = temp1;
+						}
+						if (temp1 > temp2){
 							showEnding = true;
+							unorderCount = 0;
+						}
+						if(temp1 == temp2 && tabCount(firstLine)<tabCount(nextLine)){
+							EndingSet endingset = new EndingSet();
+							endingset.setTag("</ul>");
+							unTab = tabCount(nextLine);
+						}
 
 						newNode = new ItemList(showstarting, showEnding);
 						firstLine = cuttingFront(firstLine).substring(2);
 						newNode.setData(firstLine);
 						document.insertNode(newNode);
 
-						unorderCount = temp1;
+						if (tabCount(firstLine) < tabCount) {
+							blockCount = 0;
+						}
+						
 						tabCount = tabCount(firstLine);
 						break;
 					} else if ((cuttingFront(firstLine).charAt(0) >= '0') && (cuttingFront(firstLine).charAt(0) <= '9')
@@ -251,18 +277,25 @@ public class PlainVisitor implements MDElementVisitor {
 							else
 								temp2 = tabCount(nextLine);
 						}
-						if (orderCount < temp1)
+						if (orderCount < temp1){
 							showstarting = true;
-						if (temp1 > temp2)
+							orderCount = temp1;
+						}
+						if (temp1 > temp2){
 							showEnding = true;
-
+							orderCount = 0;
+						}
 						newNode = new ItemListOrdered(showstarting, showEnding);
-						firstLine = cuttingFront(firstLine).substring(2, firstLine.length());
+						firstLine = cuttingFront(firstLine).substring(2);
 						newNode.setData(firstLine);
 						document.insertNode(newNode);
 
-						orderCount = temp1;
 						tabCount = tabCount(firstLine);
+						
+						if (tabCount(firstLine) < tabCount) {
+							unorderCount = 0;
+							blockCount = 0;
+						}
 						break;
 					} else { // the string has nothing, set Block node
 						newNode = new Paragraph();
@@ -274,6 +307,12 @@ public class PlainVisitor implements MDElementVisitor {
 					}
 				}
 			} while (!nextLine.equals(" "));
+			if(nextLine.equals(" ")){
+				Node newNode = new EndingSet();
+				newNode.setData(firstLine);
+				document.insertNode(newNode);
+				unTab = 0;
+			}
 			in.close();
 		} catch (IOException e) {
 			System.err.println(e);

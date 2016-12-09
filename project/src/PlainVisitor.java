@@ -140,7 +140,7 @@ public class PlainVisitor implements MDElementVisitor {
 
 						newNode = new Header(i);
 
-						firstLine = firstLine.substring(i, firstLine.length());
+						firstLine = cuttingFront(firstLine).substring(i);
 						newNode.setData(firstLine);
 						document.insertNode(newNode);
 						if (tabCount(firstLine) < tabCount) {
@@ -219,6 +219,8 @@ public class PlainVisitor implements MDElementVisitor {
 						else if (cuttingFront(nextLine).startsWith("*") || cuttingFront(nextLine).startsWith("-")
 								|| cuttingFront(nextLine).startsWith("+"))
 							temp2 = tabCount(nextLine) + 1;
+						else 
+							temp2 = tabCount(nextLine);
 
 						if (unorderCount < temp1)
 							showstarting = true;
@@ -226,15 +228,15 @@ public class PlainVisitor implements MDElementVisitor {
 							showEnding = true;
 
 						newNode = new ItemList(showstarting, showEnding);
-						firstLine = firstLine.substring(2, firstLine.length());
+						firstLine = cuttingFront(firstLine).substring(2);
 						newNode.setData(firstLine);
 						document.insertNode(newNode);
 
 						unorderCount = temp1;
 						tabCount = tabCount(firstLine);
 						break;
-					} else if ((firstLine.charAt(0) >= '0') && (firstLine.charAt(0) <= '9')
-							&& (firstLine.charAt(1) == '.')) {
+					} else if ((cuttingFront(firstLine).charAt(0) >= '0') && (cuttingFront(firstLine).charAt(0) <= '9')
+							&& (cuttingFront(firstLine).charAt(1) == '.')) {
 						boolean showstarting = false, showEnding = false;
 						int temp1, temp2 = 0;
 
@@ -252,7 +254,7 @@ public class PlainVisitor implements MDElementVisitor {
 							showEnding = true;
 
 						newNode = new ItemListOrdered(showstarting, showEnding);
-						firstLine = firstLine.substring(2, firstLine.length());
+						firstLine = cuttingFront(firstLine).substring(2);
 						newNode.setData(firstLine);
 						document.insertNode(newNode);
 
@@ -262,7 +264,7 @@ public class PlainVisitor implements MDElementVisitor {
 					} else { // the string has nothing, set Block node
 						newNode = new Paragraph();
 
-						newNode.setData(firstLine);
+						newNode.setData(cuttingFront(firstLine));
 						document.insertNode(newNode);
 
 						break;

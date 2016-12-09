@@ -1,7 +1,8 @@
 // PlainText class that contain pure text
 // the text in this class should be handling escape character
 
-public class PlainText extends Tokens{
+public class PlainText extends Tokens
+{
 
 
 	//private String test;
@@ -20,6 +21,7 @@ public class PlainText extends Tokens{
 	public void group(String text){
 
 			String[] tempToken=text.split(" ");
+			boolean convert=false;
 			for(int a = 0;a<tempToken.length;a++){
 			//for htmlText
 			if((text.contains("<br>"))||(text.contains("<table>"))
@@ -29,8 +31,22 @@ public class PlainText extends Tokens{
 				setItem(text);
 			}
 
+
+			else if((!convert)&&((text.contains("<http://"))||(text.contains("<https://")))){
+				int start=text.indexOf("<http");
+				String sub=text.substring(start+1);
+				if(sub.contains(">"))
+				{
+					int end=text.indexOf(">");
+					String url=text.substring(start+1,end);
+					convert=true;
+					convertUrl(url);
+				}	
+
+			}
 			 //for plainText
-			if(text.contains(">")){
+			
+			else if(text.contains(">")){
 				convertCh(text);
 			}
 			else if(text.contains("<")){
@@ -102,9 +118,9 @@ public class PlainText extends Tokens{
 			else{
 				setItem(text);
 			}
-		}
-
 	}
+}
+	
 
 	public void convertCh(String text){
 			if(text.contains("&")){
@@ -200,6 +216,12 @@ public class PlainText extends Tokens{
 			setItem(newText);
 		}
 
+	}
+
+	public void convertUrl(String url){
+
+		String converted="<a href=\""+url+"\">"+url+"</a>";
+		setItem(converted);
 	}
 
 }

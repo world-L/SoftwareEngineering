@@ -16,14 +16,13 @@ public class Main{
 		if(format == null)
 			return;
 
-		if(format.getnumOfFile() == 0) return;
 
 		for(int i = 0;i<format.getnumOfFile();i++){ 
 
 			if(format.getStyleIndex(i) == 1)	
 				visitor = new PlainVisitor();
-			//else if(format.getStyleIndex(i) == 2)
-				//visitor = new FancyVisitor();	
+			else if(format.getStyleIndex(i) == 2)
+				visitor = new FancyVisitor();	
 			else 
 				visitor = new SlideVisitor();	//assign visitor
 

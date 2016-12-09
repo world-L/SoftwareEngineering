@@ -12,15 +12,17 @@ public class Transform{
 		
 	}
 		
+
 	public void createFile(CommandFormat format, int index, ArrayList<String> html){
          
         String fileName = format.getOutputIndex(index);
 
         if(fileName.lastIndexOf("/")!= -1){   //designate the position of the output file
             fileName = fileName.substring(fileName.lastIndexOf("/")+1,fileName.length());
-            fileName = "../dist/" + fileName;        
+            //fileName = "../dist/" + fileName;        
         }
-         
+        int filelen =  fileName.length();
+
          int i=1;
          
         try{
@@ -30,19 +32,19 @@ public class Transform{
             while(true){ // check the exist file and add .html + i-th number to fileName
             	if (file.exists()){
                     
-      				fileName = fileName.substring(0,format.getOutputIndex(index).length()-5) + "-" + i + ".html";
+      				fileName = fileName.substring(0,filelen-5) + "-" + i + ".html";
       				file = new File(fileName);
      				
-     				i++;
+     				  i++;
      				
-     			}
-     			else
-     				break;
-             }
+     			    }
+     			   else
+     				  break;
+            }
    
             FileWriter fw = new FileWriter(file, false) ;
             
-            fw.write("<html>\n<title></title>\n<body>");    //beginning of the html format
+            fw.write("<!DOCTYPE html><html>\n<title></title>\n<body>");    //beginning of the html format
             fw.flush();
 
             for(String line : html){    //write html code line by line
@@ -72,7 +74,7 @@ public class Transform{
           
         }catch(Exception e){
             e.printStackTrace();
-            System.exit(1);
+            return;
         }
 
 

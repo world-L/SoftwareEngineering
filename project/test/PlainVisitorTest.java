@@ -21,13 +21,15 @@ public class PlainVisitorTest
 	public void testVisitNodeHeader() {
 		PlainVisitor p = new PlainVisitor() ;
 		Node node = new Header(1);
+		node.setData("data");
 		p.visitNode(node);
-		assertTrue(node.getHtml().equals("<h1>null</h1>"));
+		assertTrue(node.getHtml().equals("<h1>data</h1>"));
 	}
 	@Test
 	public void testVisitNodeHorizon() {
 		PlainVisitor p = new PlainVisitor() ;
 		Node node = new Horizon();
+		node.setData("data");
 		p.visitNode(node);
 		assertTrue(node.getHtml().equals("<hr/>"));
 	}
@@ -35,29 +37,33 @@ public class PlainVisitorTest
 	public void testVisitNodeItemList() {
 		PlainVisitor p = new PlainVisitor() ;
 		Node node = new ItemList(true,true);
+		node.setData("data");
 		p.visitNode(node);
-		assertTrue(node.getHtml().equals("<ul><li>null</li></ul>"));
+		assertTrue(node.getHtml().equals("<ul><li>data</li></ul>"));
 	}	
 	@Test
 	public void testVisitNodeItemListOrdered() {
 		PlainVisitor p = new PlainVisitor() ;
 		Node node = new ItemListOrdered(true,true);
+		node.setData("data");
 		p.visitNode(node);
-		assertTrue(node.getHtml().equals("<ol><li>null</li></ol>"));
+		assertTrue(node.getHtml().equals("<ol><li>data</li></ol>"));
 	}	
 	@Test
 	public void testVisitNodeBlock() {
 		PlainVisitor p = new PlainVisitor() ;
 		Node node = new Block(true,true);
+		node.setData("data");
 		p.visitNode(node);
-		assertTrue(node.getHtml().equals("<blockquote><p>null</p></blockquote>"));
+		assertTrue(node.getHtml().equals("<blockquote><p>data</p></blockquote>"));
 	}
 	@Test
 	public void testVisitNodeParagraph() {
 		PlainVisitor p = new PlainVisitor() ;
 		Node node = new Paragraph();
+		node.setData("data");
 		p.visitNode(node);
-		assertTrue(node.getHtml().equals("<p>null</p>"));
+		assertTrue(node.getHtml().equals("<p>data</p>"));
 	}
 
 

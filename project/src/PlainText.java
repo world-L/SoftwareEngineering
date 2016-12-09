@@ -13,10 +13,6 @@ public class PlainText extends Tokens{
 		
 		group(text);	
 	}
-		
-	public void accept(MDElementVisitor visitor){
-
-	}
 
 	public void group(String text){
 			

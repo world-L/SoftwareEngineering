@@ -21,16 +21,14 @@ public class Header extends Node{
 		String html = new String();
 		
 		html = this.head;
-		for(Node inNode : this.otherNode){
-        	html = html + inNode.getHtml();
-		}
       	
       	for(Tokens token : this.token)
         	html = html + token.getItem();    
-      	
+
       	/*when #### is located in back side*/
-      	for(int i = html.length()-1; i>=0; i--){
-      		if(html.charAt(i) == ' ' || html.charAt(i) == '\t');
+      	for(int i = html.length()-1; i>=4; i--){
+      		if(html.charAt(i) == ' ');
+      		else if(html.charAt(i) == '\t');
       		else if(html.charAt(i) == '#' && count < level){
       			count++;
       		}

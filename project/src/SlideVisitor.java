@@ -16,7 +16,9 @@ public class SlideVisitor implements MDElementVisitor {
     for (int i = 0; i < string.length(); i++) {
       string = string.substring(i);
 
-      if (string.startsWith("\t") || string.startsWith("    "))
+      if (string.startsWith("\t"))
+        tabcount++;
+      else if(string.startsWith("    "))
         tabcount++;
       else
         break;
@@ -28,11 +30,14 @@ public class SlideVisitor implements MDElementVisitor {
     for (int i = 0; i < string.length(); i++) {
       string = string.substring(i);
 
-      if (string.startsWith(" ") || string.startsWith("\t"))
+      if (string.startsWith(" "))
+        continue;
+      else if(string.startsWith("\t"))
         continue;
       else
         break;
     }
+
     return string;
   }
 
@@ -44,10 +49,6 @@ public class SlideVisitor implements MDElementVisitor {
       node.insertToken(new PlainText(node.getData()));
       break;
     }
-
-    // apply accept function to nested Node list
-    for (Node nestedNode : node.getNodeList())
-      nestedNode.accept(this);
 
     // check instance of the node and generate html code
     if (node instanceof Header) {
@@ -124,7 +125,6 @@ public class SlideVisitor implements MDElementVisitor {
         nextLine = new String(firstLine);
         firstLine = new String(changeLine);
 
-        System.out.println(firstLine);
         while (true) { // iterate until string has no item
           Node newNode;
 
@@ -134,13 +134,16 @@ public class SlideVisitor implements MDElementVisitor {
           /* two 'if' statement is about header */
           else if (cuttingFront(firstLine).startsWith("#")) {
             int i;
-            for (i = 1; i < firstLine.length(); i++)
+            for (i = 1; i < firstLine.length(); i++){
+              if(i == 5)
+                break;
               if (firstLine.charAt(i) != '#')
                 break;
+            }
 
             newNode = new Header(i);
 
-            firstLine = firstLine.substring(i, firstLine.length());
+            firstLine = cuttingFront(firstLine).substring(i);
             newNode.setData(firstLine);
             document.insertNode(newNode);
             if (tabCount(firstLine) < tabCount) {
@@ -226,15 +229,15 @@ public class SlideVisitor implements MDElementVisitor {
               showEnding = true;
 
             newNode = new ItemList(showstarting, showEnding);
-            firstLine = firstLine.substring(2, firstLine.length());
+            firstLine = cuttingFront(firstLine).substring(2);
             newNode.setData(firstLine);
             document.insertNode(newNode);
 
             unorderCount = temp1;
             tabCount = tabCount(firstLine);
             break;
-          } else if ((firstLine.charAt(0) >= '0') && (firstLine.charAt(0) <= '9')
-              && (firstLine.charAt(1) == '.')) {
+          } else if ((cuttingFront(firstLine).charAt(0) >= '0') && (cuttingFront(firstLine).charAt(0) <= '9')
+              && (cuttingFront(firstLine).charAt(1) == '.')) {
             boolean showstarting = false, showEnding = false;
             int temp1, temp2 = 0;
 
@@ -252,7 +255,7 @@ public class SlideVisitor implements MDElementVisitor {
               showEnding = true;
 
             newNode = new ItemListOrdered(showstarting, showEnding);
-            firstLine = firstLine.substring(2, firstLine.length());
+            firstLine = cuttingFront(firstLine).substring(2, firstLine.length());
             newNode.setData(firstLine);
             document.insertNode(newNode);
 
@@ -262,7 +265,7 @@ public class SlideVisitor implements MDElementVisitor {
           } else { // the string has nothing, set Block node
             newNode = new Paragraph();
 
-            newNode.setData(firstLine);
+            newNode.setData(cuttingFront(firstLine));
             document.insertNode(newNode);
 
             break;
@@ -272,7 +275,7 @@ public class SlideVisitor implements MDElementVisitor {
       in.close();
     } catch (IOException e) {
       System.err.println(e);
-      System.exit(1);
+      return;
     }
 
   }

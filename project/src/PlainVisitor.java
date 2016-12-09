@@ -50,10 +50,6 @@ public class PlainVisitor implements MDElementVisitor {
 			break;
 		}
 
-		// apply accept function to nested Node list
-		for (Node nestedNode : node.getNodeList())
-			nestedNode.accept(this);
-
 		// check instance of the node and generate html code
 		if (node instanceof Header) {
 			Header header = (Header) node;
@@ -129,7 +125,6 @@ public class PlainVisitor implements MDElementVisitor {
 				nextLine = new String(firstLine);
 				firstLine = new String(changeLine);
 
-				System.out.println(firstLine);
 				while (true) { // iterate until string has no item
 					Node newNode;
 
@@ -139,9 +134,12 @@ public class PlainVisitor implements MDElementVisitor {
 					/* two 'if' statement is about header */
 					else if (cuttingFront(firstLine).startsWith("#")) {
 						int i;
-						for (i = 1; i < firstLine.length(); i++)
+						for (i = 1; i < firstLine.length(); i++){
+							if(i == 5)
+								break;
 							if (firstLine.charAt(i) != '#')
 								break;
+						}
 
 						newNode = new Header(i);
 
@@ -277,7 +275,7 @@ public class PlainVisitor implements MDElementVisitor {
 			in.close();
 		} catch (IOException e) {
 			System.err.println(e);
-			System.exit(1);
+			return;
 		}
 
 	}

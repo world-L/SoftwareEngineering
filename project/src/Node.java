@@ -6,13 +6,11 @@ import java.util.ArrayList;
 
 public class Node implements MDElement{
 
-	protected ArrayList<Node> otherNode;
 	protected ArrayList<Tokens> token;
 	private String data;
 	protected String html;
 
 	public Node(){
-		otherNode = new ArrayList<Node>();
 		token = new ArrayList<Tokens>();
 	}
 	
@@ -37,12 +35,6 @@ public class Node implements MDElement{
 		String returnData = this.data;
 		this.data = "";
 		return returnData;
-	}
-	public ArrayList<Node> getNodeList(){
-		return this.otherNode;
-	}
-	public void insertNode(Node node){
-		this.otherNode.add(node);
 	}
 
 }

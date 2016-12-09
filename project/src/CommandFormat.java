@@ -37,12 +37,6 @@ public class CommandFormat{
 	public String getInput(){
 		return this.input.get(numOfFile);
 	}
-	public String getOutput(){
-		return this.output.get(numOfFile);
-	}
-	public int getStyle(){
-		return this.style.get(numOfFile);
-	}	
 	public int getnumOfFile(){
 		return this.numOfFile;
 	}

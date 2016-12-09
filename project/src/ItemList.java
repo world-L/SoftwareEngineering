@@ -19,10 +19,7 @@ public class ItemList extends Node{
 			html = this.starting;
 		
 		html = html + this.head;
-		
-		for(Node inNode : this.otherNode)
-        	html = html + inNode.getHtml();    
-      	
+		      	
       	for(Tokens token : this.token)
         	html = html + token.getItem();    
       	

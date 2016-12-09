@@ -1,4 +1,4 @@
-#Assignment 1 - README
+#Assignment 3 - README
 
 
 ###Write a Java file that receives command line inputs
@@ -71,3 +71,23 @@ If you want any help in using command line, you can use __-help__ option.
 	  >> Read inputFile1.md and Convert to inputFile1.html as fancy style
 	  >> Read inputFile2.md and Convert to inputFile2.html as plain style
 	  >> Read inputFile3.md and Convert to outputFile3.html as plain style
+
+#####There are several grammar rules that you have to follow
+
+* "#" header and horizontal header cannot be used at the same time
+	
+* nested quoted block cannot be used 
+	
+* different list symbol are not discriminated in HTML code
+
+#####features
+
+######header
+**Italic* **bold**
+>quoted block
+
+* unordered list
+* unordered list
+1. orderedlist
+2. orderedlist
+. $ ^ {} [] () * + ? \ 

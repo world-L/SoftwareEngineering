@@ -9,7 +9,6 @@
   <property name="app.version" value="0.1-dev"/>
 
   <property name="build.home" value="${basedir}/classes"/>
-  <property name="dist.home" value="${basedir}/dist"/>
   <property name="docs.home" value="${basedir}/document"/>
   <property name="src.home" value="${basedir}/src"/>
   <property name="test.home" value="${basedir}/test"/>
@@ -23,14 +22,12 @@
   <target name="clean"
    description="Delete old build and dist directories">
     <delete dir="${build.home}"/>
-    <delete dir="${dist.home}"/>
     <delete dir="${test.report}"/>
   </target>
  
   <target name="prepare" depends="clean">
 
     <mkdir dir="${build.home}"/>
-    <mkdir dir="${dist.home}"/>
     <mkdir dir="${test.report}"/>
     
   </target>

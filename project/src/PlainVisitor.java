@@ -250,7 +250,7 @@ public class PlainVisitor implements MDElementVisitor {
 						}
 
 						newNode = new ItemList(showstarting, showEnding);
-						firstLine = cuttingFront(firstLine).substring(2);
+						firstLine = cuttingFront(firstLine).substring(1);
 						newNode.setData(firstLine);
 						document.insertNode(newNode);
 

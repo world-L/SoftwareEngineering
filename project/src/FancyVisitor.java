@@ -1,9 +1,6 @@
-import java.awt.SecondaryLoop;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-
-import javax.swing.plaf.basic.BasicTabbedPaneUI.TabbedPaneLayout;
 
 //PlainVisitor class that actually read, parse file and generate html code as plain style
 
@@ -12,13 +9,13 @@ public class FancyVisitor implements MDElementVisitor {
   }
 
   public int tabCount(String string) {
+    string.replace("    ", "\t");
+    
     int tabcount = 0;
     for (int i = 0; i < string.length(); i++) {
       string = string.substring(i);
 
       if (string.startsWith("\t"))
-        tabcount++;
-      else if(string.startsWith("    "))
         tabcount++;
       else
         break;
@@ -37,8 +34,10 @@ public class FancyVisitor implements MDElementVisitor {
       else
         break;
     }
-
     return string;
+  }
+  public boolean showTagLater(String tag, int tCount){
+    return true;
   }
 
   // the function that parse raw data of the node to token and set html code
@@ -54,7 +53,7 @@ public class FancyVisitor implements MDElementVisitor {
     if (node instanceof Header) {
       Header header = (Header) node;
 
-      header.setHead("<h" + header.getLevel() + ">");
+      header.setHead("<h" + header.getLevel() + " style = \"color: pink; font-family:'Raleway',sans-serif;font-weight: 800; line-height: 72px;  margin: 0 0 24px; text-align: center;text-transform: uppercase;\">");
       header.setTail("</h" + header.getLevel() + ">");
       header.setHtml();
     }if (node instanceof Horizon) {
@@ -65,31 +64,35 @@ public class FancyVisitor implements MDElementVisitor {
     }if (node instanceof ItemList) {
       ItemList itemlist = (ItemList) node;
 
-      itemlist.setStarting("<ul>");
-      itemlist.setHead("<li>");
+      itemlist.setStarting("<ul style = \"color:#ff6600; margin-top:30px;\">");
+      itemlist.setHead("<li style = \"margin-top:20px;\">");
       itemlist.setTail("</li>");
       itemlist.setEnding("</ul>");
       itemlist.setHtml();
     } if (node instanceof ItemListOrdered) {
       ItemListOrdered itemlist = (ItemListOrdered) node;
 
-      itemlist.setStarting("<ol>");
-      itemlist.setHead("<li>");
+      itemlist.setStarting("<ol style = \"color:#00a3cc;\">");
+      itemlist.setHead("<li style = \"margin-top:20px;\">");
       itemlist.setTail("</li>");
       itemlist.setEnding("</ol>");
       itemlist.setHtml();
     } if (node instanceof Block) {
       Block block = (Block) node;
 
-      block.setStarting("<blockquote>");
-      block.setHead("<p>");
+      block.setStarting("<blockquote style = \" display:block;background: #ffff99;padding: 15px 20px 15px 45px; margin: 2em 10% 2em 10%;position: relative;font-family: Georgia, serif;font-size: 16px;line-height: 1.2;color: #666;text-align: justify; border-left: 15px solid #c76c0c; border-right: 2px solid #c76c0c; -moz-box-shadow: 2px 2px 15px #ccc;-webkit-box-shadow: 2px 2px 15px #ccc; box-shadow: 2px 2px 15px #ccc;\">");
+      block.setHead("<p style = \"color:#BA55D3; margin-left:2em;\">");
       block.setTail("</p>");
       block.setEnding("</blockquote>");
       block.setHtml();
+    } if(node instanceof EndingSet){
+      EndingSet endingset = (EndingSet) node;
+      endingset.setTag("</ul>");
+      endingset.setHtml();
     } if(node instanceof Paragraph){
       Paragraph paragraph = (Paragraph) node;
 
-      paragraph.setHead("<p>");
+      paragraph.setHead("<p style = \"color:#BA55D3; margin-left:2em;\">");
       paragraph.setTail("</p>");
       paragraph.setHtml();
     }
@@ -108,17 +111,16 @@ public class FancyVisitor implements MDElementVisitor {
       int orderCount = 0;
       int blockCount = 0;
       int tabCount = 0;
+      int unTab = 0;
 
       do {
         firstLine = in.readLine();
         if (firstLine != null){
-          while (firstLine.equals("") || firstLine.equals("\t") || firstLine.equals(" "))
+          while (cuttingFront(firstLine).equals(""))
             firstLine = in.readLine();
         }
         else if(firstLine == null)
           firstLine = new String(" ");
-        
-        
 
         /* line setting */
         String changeLine = new String(nextLine);
@@ -131,8 +133,17 @@ public class FancyVisitor implements MDElementVisitor {
           if (firstLine.equals("") || firstLine.equals(" ") || firstLine.equals("\t")) {
             break;
           }
+          
+          
+          if((tabCount(firstLine)<unTab) && (!cuttingFront(firstLine).startsWith("-") && !cuttingFront(firstLine).startsWith("+") && !cuttingFront(firstLine).startsWith("*") )){
+            newNode = new EndingSet();
+            newNode.setData(firstLine);
+            document.insertNode(newNode);
+            unTab = 0;
+          }
+            
           /* two 'if' statement is about header */
-          else if (cuttingFront(firstLine).startsWith("#")) {
+          if (cuttingFront(firstLine).startsWith("#")) {
             int i;
             for (i = 1; i < firstLine.length(); i++){
               if(i == 5)
@@ -177,11 +188,14 @@ public class FancyVisitor implements MDElementVisitor {
               temp2 = tabCount(nextLine) + 1;
             else
               temp2 = tabCount(nextLine);
-
-            if (blockCount < temp1)
+            if (blockCount < temp1){
               showstarting = true;
-            if (temp1 > temp2)
+              blockCount = temp1;
+            }
+            if (temp1 > temp2){
               showEnding = true;
+              blockCount = 0;
+            }
 
             newNode = new Block(showstarting, showEnding);
 
@@ -189,10 +203,6 @@ public class FancyVisitor implements MDElementVisitor {
             newNode.setData(firstLine);
             document.insertNode(newNode);
 
-            if (tabCount(firstLine) < tabCount)
-              unorderCount = 0;
-
-            blockCount = temp1;
             tabCount = tabCount(firstLine);
             break;
 
@@ -222,18 +232,32 @@ public class FancyVisitor implements MDElementVisitor {
             else if (cuttingFront(nextLine).startsWith("*") || cuttingFront(nextLine).startsWith("-")
                 || cuttingFront(nextLine).startsWith("+"))
               temp2 = tabCount(nextLine) + 1;
+            else
+              temp2 = tabCount(nextLine);
 
-            if (unorderCount < temp1)
+            if (unorderCount < temp1){
               showstarting = true;
-            if (temp1 > temp2)
+              unorderCount = temp1;
+            }
+            if (temp1 > temp2){
               showEnding = true;
+              unorderCount = 0;
+            }
+            if(temp1 == temp2 && tabCount(firstLine)<tabCount(nextLine)){
+              EndingSet endingset = new EndingSet();
+              endingset.setTag("</ul>");
+              unTab = tabCount(nextLine);
+            }
 
             newNode = new ItemList(showstarting, showEnding);
-            firstLine = cuttingFront(firstLine).substring(2);
+            firstLine = cuttingFront(firstLine).substring(1);
             newNode.setData(firstLine);
             document.insertNode(newNode);
 
-            unorderCount = temp1;
+            if (tabCount(firstLine) < tabCount) {
+              blockCount = 0;
+            }
+            
             tabCount = tabCount(firstLine);
             break;
           } else if ((cuttingFront(firstLine).charAt(0) >= '0') && (cuttingFront(firstLine).charAt(0) <= '9')
@@ -249,18 +273,25 @@ public class FancyVisitor implements MDElementVisitor {
               else
                 temp2 = tabCount(nextLine);
             }
-            if (orderCount < temp1)
+            if (orderCount < temp1){
               showstarting = true;
-            if (temp1 > temp2)
+              orderCount = temp1;
+            }
+            if (temp1 > temp2){
               showEnding = true;
-
+              orderCount = 0;
+            }
             newNode = new ItemListOrdered(showstarting, showEnding);
-            firstLine = cuttingFront(firstLine).substring(2, firstLine.length());
+            firstLine = cuttingFront(firstLine).substring(2);
             newNode.setData(firstLine);
             document.insertNode(newNode);
 
-            orderCount = temp1;
             tabCount = tabCount(firstLine);
+            
+            if (tabCount(firstLine) < tabCount) {
+              unorderCount = 0;
+              blockCount = 0;
+            }
             break;
           } else { // the string has nothing, set Block node
             newNode = new Paragraph();
@@ -272,6 +303,12 @@ public class FancyVisitor implements MDElementVisitor {
           }
         }
       } while (!nextLine.equals(" "));
+      if(nextLine.equals(" ")){
+        Node newNode = new EndingSet();
+        newNode.setData(firstLine);
+        document.insertNode(newNode);
+        unTab = 0;
+      }
       in.close();
     } catch (IOException e) {
       System.err.println(e);

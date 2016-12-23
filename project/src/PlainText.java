@@ -69,18 +69,18 @@ public class PlainText extends Tokens
 				if(sub.contains("]("))
 				{
 					
-					int alt=str.indexOf("]");
-					int mid=str.indexOf("(");
-					int end=str.indexOf(")");
-					String alt2=str.substring(start+2,alt);
-					String img=str.substring(mid+1,end);
+					int alt=text.indexOf("]");
+					int mid=text.indexOf("(");
+					int end=text.indexOf(")");
+					String alt2=text.substring(start+2,alt);
+					String img=text.substring(mid+1,end);
 					convert=true;
 					String converted="<img src=\""+img+"\" "+"alt=\""+alt2+"\">";
 					setItem(converted);
 				}	
 
 			}
-			else if((!convert)&&(text.contains("[")&&( (text.contains("](http://"))||(text.contains("](https://")) ))
+			else if((!convert)&&(text.contains("["))&&( (text.contains("](http://"))||(text.contains("](https://")) ))
 		{
 			int start=text.indexOf("[");
 			String sub=text.substring(start+1);

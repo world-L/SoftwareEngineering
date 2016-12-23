@@ -63,6 +63,40 @@ public class PlainText extends Tokens
 				}	
 
 			}
+			else if((!convert)&&(text.contains("!["))&&(text.contains("](")) ){
+				int start=text.indexOf("![");
+				String sub=text.substring(start+1);
+				if(sub.contains("]("))
+				{
+					
+					int alt=str.indexOf("]");
+					int mid=str.indexOf("(");
+					int end=str.indexOf(")");
+					String alt2=str.substring(start+2,alt);
+					String img=str.substring(mid+1,end);
+					convert=true;
+					String converted="<img src=\""+img+"\" "+"alt=\""+alt2+"\">";
+					setItem(converted);
+				}	
+
+			}
+			else if((!convert)&&(text.contains("[")&&( (text.contains("](http://"))||(text.contains("](https://")) ))
+		{
+			int start=text.indexOf("[");
+			String sub=text.substring(start+1);
+			if(sub.contains("]("))
+			{
+				int alt=text.indexOf("]");
+				int mid=text.indexOf("(");
+				int end=text.indexOf(")");
+				String alt2=text.substring(start+1,alt);
+				String url=text.substring(mid+1,end);
+				String converted="<a href=\""+url+"\">"+alt2+"</a>";
+				convert=true;
+				setItem(converted);
+				
+			}
+		}
 			 //for plainText
 			
 			else if(text.contains(">")){
